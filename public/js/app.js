@@ -12,6 +12,9 @@ import { initMood } from './mood.js';
 import { initThinkOfYou } from './thinkofyou.js';
 import { initNotifications } from './notifications.js';
 import { initPopup } from './popup.js';
+import { initMusicWidget } from './musicwidget.js';
+import { initFriendshipLevel } from './friendshiplevel.js';
+import { initMap } from './map.js';
 
 console.log('🌸 Quatre+ initialisé (Mode Modulaire)');
 
@@ -26,4 +29,8 @@ initAuth((userData) => {
     initMood();
     initThinkOfYou();
     initPopup();
+    initMusicWidget();
+    initFriendshipLevel(userData);
+    initMap();
 });
+

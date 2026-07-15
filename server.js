@@ -28,6 +28,9 @@ app.use('/api/shared', require('./routes/shared'));
 app.use('/api/mood', require('./routes/mood'));
 app.use('/api/thinkofyou', require('./routes/thinkofyou'));
 app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/music', require('./routes/music'));
+app.use('/api/friendship', require('./routes/friendship'));
+app.use('/api/map', require('./routes/map'));
 
 // Page d'accueil
 app.get('/', (req, res) => {

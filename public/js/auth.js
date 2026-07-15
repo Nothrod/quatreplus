@@ -36,17 +36,24 @@ export function initAuth(onLoginSuccess) {
 
     loginForm.addEventListener('submit', async (e) => {
         e.preventDefault();
+        console.log("📤 [FRONTEND] Tentative de connexion..."); // <-- AJOUTE CECI
+
         loginError.textContent = 'Connexion en cours...';
         const username = document.getElementById('username').value.toLowerCase().trim();
         const password = document.getElementById('password').value;
 
         try {
+            console.log("📤 [FRONTEND] Envoi fetch vers /api/auth/login avec :", username); // <-- AJOUTE CECI
+
             const res = await fetch('/api/auth/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username, password })
             });
+
             const data = await res.json();
+            console.log("📥 [FRONTEND] Réponse du serveur :", data); // <-- AJOUTE CECI
+
             if (data.success) {
                 loginError.textContent = '';
                 const meRes = await fetch('/api/auth/me');
@@ -56,6 +63,7 @@ export function initAuth(onLoginSuccess) {
                 loginError.textContent = data.error || 'Identifiants incorrects';
             }
         } catch (err) {
+            console.error("❌ [FRONTEND] Erreur fetch :", err); // <-- AJOUTE CECI
             loginError.textContent = 'Erreur de connexion au serveur';
         }
     });

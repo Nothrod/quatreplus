@@ -1,160 +1,159 @@
 // routes/thinkofyou.js
 const express = require('express');
 const router = express.Router();
-const { users, saveStore } = require('../data/store');
 
-// Récupérer les stats
-router.get('/', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+// ✅ Import ultra-sécurisé du store
+let users = {};
+let saveStore = () => console.warn('⚠️ saveStore non disponible');
 
-    const currentUser = req.session.user;
-    const otherUser = currentUser === 'marc' ? 'blandine' : 'marc';
-
-    const myStats = users[currentUser].thinkOfYou || { total: 0, streak: 0, lastSent: null, history: [] };
-    const otherStats = users[otherUser].thinkOfYou || { total: 0, streak: 0, lastSent: null, history: [] };
-
-    res.json({
-        myStats: myStats,
-        otherStats: otherStats,
-        otherName: users[otherUser].profile.name,
-        canSend: canSendToday(currentUser)
-    });
-});
-
-// Envoyer un "Je pense à toi"
-router.post('/send', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-
-    const currentUser = req.session.user;
-    const otherUser = currentUser === 'marc' ? 'blandine' : 'marc';
-
-    if (!users[currentUser].thinkOfYou) {
-        users[currentUser].thinkOfYou = { total: 0, streak: 0, lastSent: null, history: [] };
+try {
+    const store = require('../data/store');
+    users = store.users || {};
+    if (typeof store.saveStore === 'function') {
+        saveStore = store.saveStore;
     }
-
-    if (!canSendToday(currentUser)) {
-        return res.status(400).json({ error: 'Tu as déjà envoyé un "Je pense à toi" aujourd\'hui' });
-    }
-
-    const now = new Date();
-    const today = now.toISOString().split('T')[0];
-
-    users[currentUser].thinkOfYou.total = (users[currentUser].thinkOfYou.total || 0) + 1;
-    users[currentUser].thinkOfYou.lastSent = now.getTime();
-
-    if (!users[currentUser].thinkOfYou.history) {
-        users[currentUser].thinkOfYou.history = [];
-    }
-    users[currentUser].thinkOfYou.history.push(today);
-
-    users[currentUser].thinkOfYou.streak = calculateStreak(users[currentUser].thinkOfYou.history);
-
-    // Créer une notification interne pour l'autre utilisateur
-    if (!users[otherUser].pendingNotifications) {
-        users[otherUser].pendingNotifications = [];
-    }
-
-    users[otherUser].pendingNotifications.push({
-        type: 'thinkofyou',
-        from: currentUser,
-        fromName: users[currentUser].profile.name,
-        streak: users[currentUser].thinkOfYou.streak,
-        timestamp: now.getTime(),
-                                               read: false
-    });
-
-    saveStore(users);
-
-    res.json({
-        success: true,
-        stats: users[currentUser].thinkOfYou
-    });
-});
-
-// Vérifier les notifications en attente
-router.get('/check', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-
-    const currentUser = req.session.user;
-
-    if (!users[currentUser].pendingNotifications) {
-        users[currentUser].pendingNotifications = [];
-    }
-
-    // Filtrer les notifications non lues
-    const unread = users[currentUser].pendingNotifications.filter(n => !n.read);
-
-    res.json({ notifications: unread });
-});
-
-// Marquer une notification comme lue
-router.post('/mark-read', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-
-    const currentUser = req.session.user;
-    const { timestamp } = req.body;
-
-    if (!users[currentUser].pendingNotifications) {
-        return res.json({ success: true });
-    }
-
-    const notif = users[currentUser].pendingNotifications.find(n => n.timestamp === timestamp);
-    if (notif) {
-        notif.read = true;
-        saveStore(users);
-    }
-
-    res.json({ success: true });
-});
-
-// Route de reset (pour les tests)
-router.post('/reset', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
-
-    const currentUser = req.session.user;
-
-    users[currentUser].thinkOfYou = {
-        total: 0,
-        streak: 0,
-        lastSent: null,
-        history: []
-    };
-
-    saveStore(users);
-
-    res.json({ success: true, message: 'Compteur réinitialisé' });
-});
-
-function canSendToday(username) {
-    const lastSent = users[username].thinkOfYou?.lastSent;
-    if (!lastSent) return true;
-
-    const lastDate = new Date(lastSent).toDateString();
-    const today = new Date().toDateString();
-
-    return lastDate !== today;
+} catch (err) {
+    console.error('❌ Erreur critique chargement store:', err);
 }
 
-function calculateStreak(history) {
-    if (!history || history.length === 0) return 0;
+const checkAuth = (req, res, next) => {
+    if (!req.session.user || !req.session.user.username) {
+        return res.status(401).json({ error: 'Non connecté' });
+    }
+    req.currentUser = req.session.user.username.toLowerCase();
+    next();
+};
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+router.get('/', checkAuth, (req, res) => {
+    try {
+        const currentUserData = users[req.currentUser];
+        const otherUsername = req.currentUser === 'marc' ? 'blandine' : 'marc';
+        const otherUserData = users[otherUsername];
 
-    let streak = 0;
-    let currentDate = new Date(today);
-
-    while (true) {
-        const dateStr = currentDate.toISOString().split('T')[0];
-        if (history.includes(dateStr)) {
-            streak++;
-            currentDate.setDate(currentDate.getDate() - 1);
-        } else {
-            break;
+        if (!currentUserData || !otherUserData) {
+            return res.status(500).json({ error: 'Données utilisateur introuvables' });
         }
-    }
 
-    return streak;
-}
+        if (!currentUserData.thinkOfYou) currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
+        if (!otherUserData.thinkOfYou) otherUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
+
+        const lastSentTime = currentUserData.thinkOfYou.lastSent ? new Date(currentUserData.thinkOfYou.lastSent).getTime() : 0;
+        const canSend = (Date.now() - lastSentTime) > (24 * 60 * 60 * 1000);
+
+        res.json({
+            myStats: { total: currentUserData.thinkOfYou.total, streak: currentUserData.thinkOfYou.streak },
+            otherStats: { total: otherUserData.thinkOfYou.total },
+            otherName: otherUsername,
+            canSend: canSend
+        });
+    } catch (err) {
+        console.error('❌ Erreur dans GET /api/thinkofyou:', err);
+        res.status(500).json({ error: 'Erreur serveur' });
+    }
+});
+
+router.get('/check', checkAuth, (req, res) => {
+    try {
+        const currentUserData = users[req.currentUser];
+        if (!currentUserData) return res.status(500).json({ error: 'Utilisateur introuvable' });
+
+        if (!currentUserData.pendingNotifications) {
+            currentUserData.pendingNotifications = [];
+        }
+
+        const notifications = [...currentUserData.pendingNotifications];
+
+        // On vide le tableau
+        currentUserData.pendingNotifications = [];
+
+        // ✅ Sauvegarde protégée : si elle échoue, on log l'erreur mais on ne crash pas le serveur
+        try {
+            saveStore(users);
+            console.log(`✅ [CHECK] Notifications vidées et sauvegardées pour ${req.currentUser}`);
+        } catch (saveErr) {
+            console.error('❌ Échec de la sauvegarde (check):', saveErr);
+        }
+
+        res.json({
+            success: true,
+            notifications: notifications,
+            count: notifications.length
+        });
+    } catch (err) {
+        console.error('❌ Erreur critique dans /check:', err);
+        res.status(500).json({ error: 'Erreur serveur interne' });
+    }
+});
+
+router.post('/send', checkAuth, (req, res) => {
+    try {
+        const currentUserData = users[req.currentUser];
+        const otherUsername = req.currentUser === 'marc' ? 'blandine' : 'marc';
+        const otherUserData = users[otherUsername];
+
+        if (!currentUserData || !otherUserData) return res.status(500).json({ error: 'Utilisateur introuvable' });
+        if (!currentUserData.thinkOfYou) currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
+        if (!otherUserData.pendingNotifications) otherUserData.pendingNotifications = [];
+
+        const lastSentTime = currentUserData.thinkOfYou.lastSent ? new Date(currentUserData.thinkOfYou.lastSent).getTime() : 0;
+        const canSend = (Date.now() - lastSentTime) > (24 * 60 * 60 * 1000);
+
+        if (!canSend) return res.status(400).json({ error: 'Déjà envoyé aujourd\'hui' });
+
+        currentUserData.thinkOfYou.total += 1;
+
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        const lastSentDateStr = currentUserData.thinkOfYou.lastSent ? new Date(currentUserData.thinkOfYou.lastSent).toDateString() : null;
+
+        if (lastSentDateStr === yesterday.toDateString()) {
+            currentUserData.thinkOfYou.streak += 1;
+        } else {
+            currentUserData.thinkOfYou.streak = 1;
+        }
+
+        currentUserData.thinkOfYou.lastSent = Date.now();
+
+        otherUserData.pendingNotifications.push({
+            type: 'thinkofyou',
+            from: req.currentUser,
+            fromName: req.currentUser === 'marc' ? 'Marc' : 'Blandine',
+            streak: currentUserData.thinkOfYou.streak,
+            timestamp: Date.now(),
+                                                read: false
+        });
+
+        try {
+            saveStore(users);
+            console.log(`💌 [SEND] "Je pense à toi" envoyé de ${req.currentUser} à ${otherUsername}`);
+        } catch (saveErr) {
+            console.error('❌ Échec de la sauvegarde (send):', saveErr);
+        }
+
+        res.json({
+            success: true,
+            stats: { total: currentUserData.thinkOfYou.total, streak: currentUserData.thinkOfYou.streak }
+        });
+    } catch (err) {
+        console.error('❌ Erreur critique dans /send:', err);
+        res.status(500).json({ error: 'Erreur serveur interne' });
+    }
+});
+
+router.post('/reset', checkAuth, (req, res) => {
+    try {
+        const currentUserData = users[req.currentUser];
+        if (currentUserData && currentUserData.thinkOfYou) {
+            currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null, history: [] };
+            currentUserData.pendingNotifications = [];
+
+            try { saveStore(users); } catch (e) { console.error('❌ Échec sauvegarde (reset):', e); }
+        }
+        res.json({ success: true });
+    } catch (err) {
+        console.error('❌ Erreur critique dans /reset:', err);
+        res.status(500).json({ error: 'Erreur serveur interne' });
+    }
+});
 
 module.exports = router;

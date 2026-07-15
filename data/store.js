@@ -24,9 +24,10 @@ const defaultData = {
         thinkOfYou: {
             total: 0,
             streak: 0,
-            lastSent: null, // Timestamp du dernier envoi
-            history: [] // Array des dates d'envoi
-        }
+            lastSent: null,
+            history: []
+        },
+        pendingNotifications: [] // ✅ AJOUTÉ ICI
     },
     blandine: {
         username: 'blandine',
@@ -43,24 +44,24 @@ const defaultData = {
             streak: 0,
             lastSent: null,
             history: []
-        }
+        },
+        pendingNotifications: [] // ✅ AJOUTÉ ICI
     }
 };
 
 function loadStore() {
     if (fs.existsSync(storePath)) {
         const saved = JSON.parse(fs.readFileSync(storePath, 'utf8'));
-        // Fusionne avec les défauts pour assurer la compatibilité
         return {
-            marc: { 
-                ...defaultData.marc, 
-                ...saved.marc, 
+            marc: {
+                ...defaultData.marc,
+                ...saved.marc,
                 profile: { ...defaultData.marc.profile, ...saved.marc?.profile },
                 thinkOfYou: { ...defaultData.marc.thinkOfYou, ...saved.marc?.thinkOfYou }
             },
-            blandine: { 
-                ...defaultData.blandine, 
-                ...saved.blandine, 
+            blandine: {
+                ...defaultData.blandine,
+                ...saved.blandine,
                 profile: { ...defaultData.blandine.profile, ...saved.blandine?.profile },
                 thinkOfYou: { ...defaultData.blandine.thinkOfYou, ...saved.blandine?.thinkOfYou }
             }
@@ -73,6 +74,21 @@ function saveStore(data) {
     fs.writeFileSync(storePath, JSON.stringify(data, null, 2));
 }
 
+// Dans defaultData.marc et defaultData.blandine, ajoute :
+memories: [
+    // Exemple de donnée de test (Paris)
+    {
+        id: 1,
+        title: "Notre premier café",
+        desc: "On a parlé pendant 4 heures ☕",
+        date: "2023-10-27",
+        lat: 48.8566,
+        lng: 2.3522,
+        addedBy: "marc"
+    }
+]
+
 const users = loadStore();
 
+// ✅ On exporte bien saveStore
 module.exports = { users, saveStore };

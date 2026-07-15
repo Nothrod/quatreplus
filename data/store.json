@@ -15,19 +15,23 @@
     "thinkOfYou": {
       "total": 1,
       "streak": 0,
-      "lastSent": 1784098826252,
+      "lastSent": 1784105467207,
       "history": [
         "2026-07-15"
       ]
     },
-    "pendingNotifications": [
+    "pendingNotifications": [],
+    "memories": [
       {
-        "type": "thinkofyou",
-        "from": "blandine",
-        "fromName": "Blandine",
-        "streak": 0,
-        "timestamp": 1784098837728,
-        "read": true
+        "id": 1784144999304,
+        "title": "Première échange",
+        "desc": "Devant la salle des fêtes à Halloween",
+        "date": "2022-10-23",
+        "lat": 47.4413100753842,
+        "lng": 6.638284921646119,
+        "addedBy": {
+          "username": "blandine"
+        }
       }
     ]
   },
@@ -52,14 +56,18 @@
         "2026-07-15"
       ]
     },
-    "pendingNotifications": [
+    "pendingNotifications": [],
+    "memories": [
       {
-        "type": "thinkofyou",
-        "from": "marc",
-        "fromName": "Marc",
-        "streak": 0,
-        "timestamp": 1784098826252,
-        "read": true
+        "id": 1784144999304,
+        "title": "Première échange",
+        "desc": "Devant la salle des fêtes à Halloween",
+        "date": "2022-10-23",
+        "lat": 47.4413100753842,
+        "lng": 6.638284921646119,
+        "addedBy": {
+          "username": "blandine"
+        }
       }
     ]
   }

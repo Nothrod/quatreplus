@@ -3,8 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" type="image/png" sizes="32x32" href="images/favicon.png">
     <title>Quatre+</title>
     <link rel="stylesheet" href="/css/style.css">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 </head>
 <body>
     <div id="app">
@@ -37,37 +43,47 @@
             <main>
 
                 <!-- =================================================
-                     ONGLET 1 : ACCUEIL (Dashboard en grille 2x4)
+                     ONGLET 1 : ACCUEIL (Dashboard)
                      ================================================= -->
                 <div id="tab-home" class="tab-content active">
                     <div class="dashboard-grid">
 
                         <!-- WIDGET 1 : Photo partagée -->
                         <div class="widget-card widget-photo" id="dashboard-photo">
-                            <img id="shared-photo" src="" alt="Photo partagée"
+                            <img id="shared-photo" alt="Photo partagée"
                                  onerror="this.style.display='none'; document.getElementById('photo-fallback').style.display='flex';">
                             <div id="photo-fallback" class="photo-fallback">
                                 <span class="fallback-icon">📷</span>
                             </div>
-                            <label for="photo-upload" class="photo-overlay">
-                                <span>📷</span>
+                            <label for="photo-upload" class="photo-change-btn" title="Changer la photo">
+                                <span>✏️</span>
                                 <input type="file" id="photo-upload" accept="image/*" hidden>
                             </label>
+                            <button class="photo-expand-btn" id="photo-expand-btn" title="Voir en grand">
+                                <span>🔍</span>
+                            </button>
+                            <div class="photo-author-text" id="photo-author"></div>
                         </div>
 
-                        <!-- WIDGET 2 : Jours d'amitié + Humeur de l'autre (combiné) -->
-                        <div class="widget-card widget-friendship-mood">
-                            <div class="friendship-days">
-                                <span class="friendship-number" id="days-counter">—</span>
-                                <span class="friendship-label">Jours ensemble</span>
+                        <!-- WIDGET 2 : Niveau d'amitié + Humeur de l'autre -->
+                        <div class="widget-card widget-friendship-level" id="friendship-widget">
+                            <div class="friendship-level-display">
+                                <span class="friendship-level-label">Niveau d'amitié</span>
+                                <div class="friendship-level-value">
+                                    <span class="level-number" id="friendship-level">3.5</span>
+                                    <span class="level-plus">+</span>
+                                </div>
+                                <div class="friendship-progress">
+                                    <div class="progress-bar" id="friendship-progress-bar"></div>
+                                </div>
                             </div>
-                            <div class="mood-mini-display">
-                                <span class="mood-mini-label">Humeur de <span id="other-name">...</span></span>
-                                <span class="summary-emoji" id="other-mood-emoji">💭</span>
+                            <div class="friendship-status" id="friendship-status">
+                                <span class="status-icon" id="other-mood-emoji">💭</span>
+                                <span class="status-text">Humeur de <span id="other-name">...</span></span>
                             </div>
                         </div>
 
-                        <!-- WIDGET 3 : "Je pense à toi" (bouton d'envoi) -->
+                        <!-- WIDGET 3 : "Je pense à toi" -->
                         <div class="widget-card widget-think-compact" id="think-widget">
                             <button id="think-btn" class="think-btn-compact">
                                 <span class="think-icon">💗</span>
@@ -85,46 +101,54 @@
                             <span class="weather-desc">À configurer</span>
                         </div>
 
-                        <!-- WIDGET 5 : Musique du moment (placeholder) -->
-                        <div class="widget-card widget-music">
-                            <span class="music-icon">🎵</span>
-                            <span class="music-text">Notre playlist</span>
+                        <!-- WIDGET 5 : Musique du moment -->
+                        <div class="widget-card widget-music" id="music-widget">
+                            <div class="music-content" id="music-content">
+                                <div class="music-info">
+                                    <div class="music-track">
+                                        <span class="music-track-title" id="music-title">Aucune musique</span>
+                                        <span class="music-track-artist" id="music-artist">—</span>
+                                    </div>
+                                    <a href="#" id="music-link" class="music-youtube-link" target="_blank" rel="noopener" style="display: none;">
+                                        <span class="youtube-icon">▶</span>
+                                        <span>Écouter</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="music-author" id="music-author"></div>
                         </div>
 
                         <!-- WIDGET 6 : Compte à rebours (placeholder) -->
                         <div class="widget-card widget-countdown">
                             <span class="countdown-number">—</span>
-                            <span class="countdown-label">Prochain rendez-vous</span>
+                            <span class="countdown-label">Prochain RDV</span>
                         </div>
 
-                        <!-- WIDGET 7 : Citation du jour (placeholder) -->
+                        <!-- WIDGET 7 : Citation du jour -->
                         <div class="widget-card widget-quote">
                             <span class="quote-icon">❝</span>
                             <p class="quote-text">Chaque moment avec toi est un cadeau.</p>
                         </div>
 
-                        <!-- WIDGET 8 : Stats / Badges (placeholder) -->
+                        <!-- WIDGET 8 : Stats (placeholder) -->
                         <div class="widget-card widget-stats">
                             <span class="stats-icon">🏆</span>
                             <span class="stats-value">0</span>
-                            <span class="stats-label">Badges débloqués</span>
+                            <span class="stats-label">Badges</span>
                         </div>
 
                     </div>
                 </div>
 
                 <!-- =================================================
-                     ONGLET 2 : MON ESPACE (Profil & Humeur perso)
+                     ONGLET 2 : MON ESPACE (Profil & Humeur)
                      ================================================= -->
                 <div id="tab-profile" class="tab-content">
                     <div class="widget mood-widget">
                         <div class="widget-header">
                             <h3>💛 Mon humeur du jour</h3>
-                            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">
-                                Comment te sens-tu aujourd'hui ?
-                            </p>
+                            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">Comment te sens-tu aujourd'hui ?</p>
                         </div>
-
                         <div class="mood-selector" id="mood-selector">
                             <button class="mood-btn" data-mood="😊">😊</button>
                             <button class="mood-btn" data-mood="🥰">🥰</button>
@@ -135,14 +159,54 @@
                             <button class="mood-btn" data-mood="🥵">🥵</button>
                             <button class="mood-btn" data-mood="🤗">🤗</button>
                         </div>
-                        <p id="my-mood-text" class="my-mood-text">
-                            Choisis ton humeur ci-dessous 👇
-                        </p>
+                        <p id="my-mood-text" class="my-mood-text">Choisis ton humeur ci-dessous 👇</p>
                     </div>
 
-                    <!-- Placeholder musique du moment -->
-                    <div class="widget" style="text-align: center; padding: 30px 20px; opacity: 0.6;">
-                        <p>🎵 Ta musique du moment arrivera ici</p>
+                    <!-- WIDGET ÉDITION MUSIQUE -->
+                    <div class="widget music-edit-widget">
+                        <div class="widget-header">
+                            <h3>🎵 Ma musique du moment</h3>
+                        </div>
+                        <div class="music-edit-form" id="music-edit-form">
+                            <input type="text" id="music-title-input" placeholder="Titre de la chanson" required>
+                            <input type="text" id="music-artist-input" placeholder="Nom de l'artiste" required>
+                            <input type="url" id="music-url-input" placeholder="Lien YouTube (optionnel)">
+                            <button type="button" id="music-save-btn" class="btn-primary music-save-btn-full">💾 Sauvegarder</button>
+                        </div>
+                        <div class="music-current-info" id="music-current-info">
+                            <p style="font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;">Ta musique actuelle :</p>
+                            <p id="music-current-display" style="font-weight: 600; color: var(--primary-dark);">Aucune musique définie</p>
+                            <p id="music-current-author" style="font-size: 0.75rem; color: var(--primary); font-style: italic; margin-top: 4px;"></p>
+                        </div>
+                    </div>
+
+                    <!-- WIDGET GESTION NIVEAU D'AMITIÉ -->
+                    <div class="widget friendship-level-widget">
+                        <div class="widget-header">
+                            <h3>💛 Niveau d'amitié</h3>
+                        </div>
+                        <div class="friendship-current-info">
+                            <p style="font-size: 0.8rem; color: var(--primary); margin-bottom: 8px;">Niveau actuel validé :</p>
+                            <p id="friendship-current-display" style="font-size: 2rem; font-weight: 700; color: var(--primary-dark);">3.5+</p>
+                            <p id="friendship-current-author" style="font-size: 0.75rem; color: var(--primary); font-style: italic; margin-top: 4px;"></p>
+                        </div>
+                        <div class="friendship-adjust-form">
+                            <label style="font-size: 0.85rem; color: var(--primary-dark); font-weight: 600; margin-bottom: 8px; display: block;">Proposer un nouveau niveau :</label>
+                            <div class="level-selector">
+                                <button type="button" class="level-btn" data-level="3.5">3.5</button>
+                                <button type="button" class="level-btn" data-level="3.6">3.6</button>
+                                <button type="button" class="level-btn" data-level="3.7">3.7</button>
+                                <button type="button" class="level-btn" data-level="3.8">3.8</button>
+                                <button type="button" class="level-btn" data-level="3.9">3.9</button>
+                                <button type="button" class="level-btn" data-level="4.0">4.0</button>
+                            </div>
+                            <button type="button" id="friendship-propose-btn" class="btn-primary friendship-propose-btn-full">💌 Proposer ce niveau</button>
+                        </div>
+                        <div class="friendship-pending-info" id="friendship-pending-info" style="display: none;">
+                            <p style="font-size: 0.8rem; color: var(--pink-dark); margin-bottom: 8px;">⏳ Proposition en attente :</p>
+                            <p id="friendship-pending-display" style="font-size: 1.5rem; font-weight: 700; color: var(--pink-dark);">3.8+</p>
+                            <p id="friendship-pending-author" style="font-size: 0.75rem; color: var(--primary); font-style: italic; margin-top: 4px;"></p>
+                        </div>
                     </div>
                 </div>
 
@@ -153,17 +217,10 @@
                     <div class="widget think-widget-detail">
                         <div class="widget-header">
                             <h3>💭 Mes "Je pense à toi"</h3>
-                            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">
-                                Tes stats et badges
-                            </p>
                         </div>
-
-                        <!-- Bouton reset (tests uniquement) -->
-                        <button id="reset-think-btn" style="margin-top: 20px; padding: 10px 20px; background: #E0D5C7; border: none; border-radius: 12px; color: var(--primary-dark); font-size: 0.8rem; cursor: pointer; opacity: 0.6;">
+                        <button id="reset-think-btn" style="margin-top: 20px; padding: 10px 20px; background: #E0D5C7; border: none; border-radius: 12px; color: var(--primary-dark); font-size: 0.8rem; cursor: pointer; opacity: 0.6; width: 100%;">
                             🔄 Reset (tests)
                         </button>
-
-                        <!-- Stats personnelles -->
                         <div class="think-stats-detail">
                             <div class="think-stat-big">
                                 <span class="think-stat-value" id="my-total">0</span>
@@ -175,15 +232,11 @@
                                 <span class="think-stat-label">Jours consécutifs 🔥</span>
                             </div>
                         </div>
-
-                        <!-- Stats de l'autre personne -->
                         <div class="think-received">
                             <p><span id="other-think-name">...</span> t'a envoyé</p>
                             <span class="think-received-number" id="other-total">0</span>
                             <p>"Je pense à toi"</p>
                         </div>
-
-                        <!-- Badges à débloquer -->
                         <div class="think-badges">
                             <h4>🏆 Badges</h4>
                             <div class="badges-grid">
@@ -208,6 +261,23 @@
                     </div>
                 </div>
 
+                <!-- =================================================
+                     ONGLET 4 : CARTE DES SOUVENIRS
+                     ================================================= -->
+                <div id="tab-map" class="tab-content">
+                    <div class="widget map-widget">
+                        <div class="widget-header">
+                            <h3>📍 Nos Lieux</h3>
+                            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">Là où on a écrit notre histoire</p>
+                        </div>
+                        <div id="map-container"></div>
+                        <button id="add-memory-btn" class="add-memory-btn">
+                        <span>📍</span>
+                        <span>Ajouter un souvenir</span>
+                        </button>
+                    </div>
+                </div>
+
             </main>
 
             <!-- =====================================================
@@ -217,6 +287,10 @@
                 <button class="nav-btn active" data-tab="tab-home">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-text">Accueil</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-map">
+                    <span class="nav-icon">📍</span>
+                    <span class="nav-text">Carte</span>
                 </button>
                 <button class="nav-btn" data-tab="tab-think">
                     <span class="nav-icon">💭</span>
@@ -228,18 +302,57 @@
                 </button>
             </nav>
 
-        </div>
+        </div> <!-- Fin de #main-screen -->
 
         <!-- =========================================================
-             LIGHTBOX (affichage photo en grand)
-             Placée en dehors du main pour être au-dessus de tout
+             OVERLAYS & POPUPS (En dehors du main pour être au-dessus)
              ========================================================= -->
+
+        <!-- Lightbox Photo -->
         <div id="lightbox" class="lightbox">
             <button class="lightbox-close" id="lightbox-close">✕</button>
             <img id="lightbox-img" src="" alt="Photo en grand">
         </div>
 
-    </div>
+        <!-- Popup Je pense à toi -->
+        <div id="think-popup" class="think-popup">
+            <div class="think-popup-content">
+                <button class="popup-close" id="popup-close">✕</button>
+                <span class="popup-heart">💗</span>
+                <h3 class="popup-title" id="popup-title-text">Pense à toi !</h3>
+                <p class="popup-streak-text" id="popup-streak-text"></p>
+                <button class="popup-respond-btn" id="think-popup-close-btn">Merci ! 🤍</button>
+            </div>
+        </div>
+
+        <!-- Popup Validation Niveau d'Amitié -->
+        <div id="friendship-validation-popup" class="friendship-popup">
+            <div class="friendship-popup-content">
+                <span class="popup-heart">💛</span>
+                <h3 class="popup-title">Nouveau niveau d'amitié !</h3>
+                <p class="popup-text" id="popup-text">Marc propose de passer à 3.8+</p>
+                <div class="popup-actions">
+                    <button id="popup-reject-btn" class="popup-btn popup-btn-secondary">Plus tard</button>
+                    <button id="popup-accept-btn" class="popup-btn popup-btn-primary">Valider 💛</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal Ajout Souvenir Carte -->
+        <div id="memory-modal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="modal-close">✕</button>
+                <h3>Nouveau souvenir</h3>
+                <form id="memory-form">
+                    <input type="text" id="memory-title" placeholder="Nom du lieu (ex: Premier bisou)" required>
+                    <textarea id="memory-desc" placeholder="Une petite note... (ex: Sous la pluie ❤️)" rows="3" required></textarea>
+                    <input type="date" id="memory-date" required>
+                    <button type="submit" class="btn-primary">Enregistrer ce lieu 📍</button>
+                </form>
+            </div>
+        </div>
+
+    </div> <!-- Fin de #app -->
 
     <script type="module" src="/js/app.js"></script>
 </body>
