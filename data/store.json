@@ -1,0 +1,66 @@
+{
+  "marc": {
+    "username": "marc",
+    "password": "$2b$10$ceBSYXLCdrgHsNuV2acgy.GJy1qRUqRN7RMuB8Zy3zmwyLEBtl.Wy",
+    "profile": {
+      "name": "Marc",
+      "avatar": "/images/marc.jpg",
+      "mood": {
+        "emoji": "😊",
+        "timestamp": 1784067327592
+      },
+      "music": "En attente...",
+      "startDate": "2023-10-27"
+    },
+    "thinkOfYou": {
+      "total": 1,
+      "streak": 0,
+      "lastSent": 1784098826252,
+      "history": [
+        "2026-07-15"
+      ]
+    },
+    "pendingNotifications": [
+      {
+        "type": "thinkofyou",
+        "from": "blandine",
+        "fromName": "Blandine",
+        "streak": 0,
+        "timestamp": 1784098837728,
+        "read": true
+      }
+    ]
+  },
+  "blandine": {
+    "username": "blandine",
+    "password": "$2b$10$gxyH3cFWUVdyLgLlOc3CjOM2RdzqCTevbiTzsPVGCoCjCY30TTysK",
+    "profile": {
+      "name": "Blandine",
+      "avatar": "/images/blandine.jpg",
+      "mood": {
+        "emoji": "🥵",
+        "timestamp": 1784067517053
+      },
+      "music": "En attente...",
+      "startDate": "2023-10-27"
+    },
+    "thinkOfYou": {
+      "total": 1,
+      "streak": 0,
+      "lastSent": 1784098837728,
+      "history": [
+        "2026-07-15"
+      ]
+    },
+    "pendingNotifications": [
+      {
+        "type": "thinkofyou",
+        "from": "marc",
+        "fromName": "Marc",
+        "streak": 0,
+        "timestamp": 1784098826252,
+        "read": true
+      }
+    ]
+  }
+}

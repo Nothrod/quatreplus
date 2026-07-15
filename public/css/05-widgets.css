@@ -1,0 +1,250 @@
+/* =========================================
+ *  WIDGETS GÉNÉRAUX & HUMEUR
+ *  ========================================= */
+.widget {
+    background: var(--card-bg);
+    border-radius: 24px;
+    padding: 24px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 20px rgba(139, 115, 85, 0.08);
+}
+
+.widget-header h3 {
+    font-size: 1.1rem;
+    color: var(--primary-dark);
+    margin-bottom: 5px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.mood-mini-display {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.mood-mini-label {
+    font-size: 0.65rem;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.mood-widget {
+    text-align: center;
+}
+
+.mood-selector {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 20px;
+    margin-bottom: 16px;
+}
+
+.mood-btn {
+    background: white;
+    border: 2px solid #E0D5C7;
+    border-radius: 16px;
+    font-size: 2rem;
+    padding: 12px 0;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mood-btn:active, .mood-btn.active {
+    background: var(--primary);
+    border-color: var(--primary-dark);
+    transform: scale(0.92);
+}
+
+.my-mood-text {
+    font-size: 0.9rem;
+    color: var(--primary-dark);
+    font-weight: 500;
+    min-height: 1.4em;
+}
+
+/* =========================================
+ *  WIDGET "JE PENSE À TOI" (Compact & Détaillé)
+ *  ========================================= */
+.think-widget-compact {
+    padding: 16px;
+}
+
+.think-btn-compact {
+    width: 100%;
+    padding: 20px;
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--pink-light) 100%);
+    border: 2px solid var(--pink);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 16px rgba(230, 184, 184, 0.25);
+}
+
+.think-btn-compact:active:not(:disabled) {
+    transform: scale(0.98);
+    box-shadow: 0 2px 8px rgba(230, 184, 184, 0.4);
+    background: linear-gradient(135deg, var(--pink-light) 0%, #F8E1E8 100%);
+}
+
+.think-btn-compact:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: #F2EBE3;
+    border-color: #E0D5C7;
+    box-shadow: none;
+}
+
+.think-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    animation: heartbeat 2.5s infinite ease-in-out;
+}
+
+.think-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    flex: 1;
+}
+
+.think-text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--pink-dark);
+}
+
+.think-subtitle {
+    font-size: 0.8rem;
+    color: var(--pink);
+    font-weight: 500;
+}
+
+/* Widget Détaillé */
+.think-widget-detail {
+    text-align: center;
+}
+
+.think-stats-detail {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background: linear-gradient(135deg, var(--pink-light) 0%, #F8E1E8 100%);
+    border-radius: 20px;
+    padding: 30px 20px;
+    margin: 24px 0;
+    box-shadow: 0 4px 16px rgba(230, 184, 184, 0.15);
+}
+
+.think-stat-big {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.think-stat-big .think-stat-value {
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--pink-dark);
+    line-height: 1;
+}
+
+.think-stat-big .think-stat-label {
+    font-size: 0.8rem;
+    color: var(--pink);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.think-stat-divider-v {
+    width: 1px;
+    height: 60px;
+    background: rgba(230, 184, 184, 0.5);
+}
+
+.think-received {
+    background: white;
+    border: 2px solid var(--pink);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.think-received p {
+    font-size: 0.9rem;
+    color: var(--text);
+    margin-bottom: 8px;
+}
+
+.think-received-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--pink-dark);
+    display: block;
+    margin: 8px 0;
+}
+
+/* Badges */
+.think-badges {
+    margin-top: 30px;
+}
+
+.think-badges h4 {
+    font-size: 1rem;
+    color: var(--pink-dark);
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.badge-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 8px;
+    background: var(--pink-light);
+    border-radius: 16px;
+    border: 2px solid rgba(230, 184, 184, 0.3);
+    transition: all 0.3s ease;
+}
+
+.badge-item.unlocked {
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--pink-light) 100%);
+    border-color: var(--pink);
+    box-shadow: 0 4px 12px rgba(230, 184, 184, 0.25);
+}
+
+.badge-item.locked {
+    opacity: 0.4;
+    filter: grayscale(100%);
+}
+
+.badge-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.badge-name {
+    font-size: 0.7rem;
+    color: var(--pink-dark);
+    font-weight: 600;
+    text-align: center;
+}

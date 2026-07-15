@@ -1,0 +1,64 @@
+/* =========================================
+ *  ÉCRANS & STRUCTURE
+ *  ========================================= */
+.screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 30px 24px 0 24px;
+    display: none;
+    flex-direction: column;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.screen.active {
+    display: flex;
+    opacity: 1;
+}
+
+#login-screen {
+justify-content: center;
+align-items: center;
+text-align: center;
+}
+
+main {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+    scrollbar-width: none;
+}
+
+main::-webkit-scrollbar {
+    display: none;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+header h2 {
+    font-size: 1.5rem;
+    color: var(--primary-dark);
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--primary-dark);
+    margin-bottom: 8px;
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.subtitle {
+    color: var(--primary);
+    margin-bottom: 40px;
+    font-size: 1rem;
+}

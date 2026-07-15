@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Quatre+</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div id="app">
+
+        <!-- =========================================================
+             ÉCRAN 1 : CONNEXION
+             ========================================================= -->
+        <div id="login-screen" class="screen active">
+            <h1>Quatre+</h1>
+            <p class="subtitle">Espace privé</p>
+            <form id="login-form">
+                <input type="text" id="username" placeholder="Pseudo (marc ou blandine)" required autocomplete="username">
+                <input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
+                <button type="submit" class="btn-primary">Entrer</button>
+                <p id="login-error" class="error-message"></p>
+            </form>
+        </div>
+
+        <!-- =========================================================
+             ÉCRAN 2 : APPLICATION PRINCIPALE
+             ========================================================= -->
+        <div id="main-screen" class="screen">
+
+            <!-- Header commun à tous les onglets -->
+            <header>
+                <h2 id="welcome-msg">Bonjour</h2>
+                <button id="logout-btn" class="btn-secondary">Déconnexion</button>
+            </header>
+
+            <main>
+
+                <!-- =================================================
+                     ONGLET 1 : ACCUEIL (Dashboard en grille 2x4)
+                     ================================================= -->
+                <div id="tab-home" class="tab-content active">
+                    <div class="dashboard-grid">
+
+                        <!-- WIDGET 1 : Photo partagée -->
+                        <div class="widget-card widget-photo" id="dashboard-photo">
+                            <img id="shared-photo" src="" alt="Photo partagée"
+                                 onerror="this.style.display='none'; document.getElementById('photo-fallback').style.display='flex';">
+                            <div id="photo-fallback" class="photo-fallback">
+                                <span class="fallback-icon">📷</span>
+                            </div>
+                            <label for="photo-upload" class="photo-overlay">
+                                <span>📷</span>
+                                <input type="file" id="photo-upload" accept="image/*" hidden>
+                            </label>
+                        </div>
+
+                        <!-- WIDGET 2 : Jours d'amitié + Humeur de l'autre (combiné) -->
+                        <div class="widget-card widget-friendship-mood">
+                            <div class="friendship-days">
+                                <span class="friendship-number" id="days-counter">—</span>
+                                <span class="friendship-label">Jours ensemble</span>
+                            </div>
+                            <div class="mood-mini-display">
+                                <span class="mood-mini-label">Humeur de <span id="other-name">...</span></span>
+                                <span class="summary-emoji" id="other-mood-emoji">💭</span>
+                            </div>
+                        </div>
+
+                        <!-- WIDGET 3 : "Je pense à toi" (bouton d'envoi) -->
+                        <div class="widget-card widget-think-compact" id="think-widget">
+                            <button id="think-btn" class="think-btn-compact">
+                                <span class="think-icon">💗</span>
+                                <div class="think-content">
+                                    <span class="think-text">Je pense à toi</span>
+                                    <span class="think-subtitle" id="think-subtitle">Envoie un petit coucou</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- WIDGET 4 : Météo (placeholder) -->
+                        <div class="widget-card widget-weather">
+                            <span class="weather-icon">⛅</span>
+                            <span class="weather-temp">—°</span>
+                            <span class="weather-desc">À configurer</span>
+                        </div>
+
+                        <!-- WIDGET 5 : Musique du moment (placeholder) -->
+                        <div class="widget-card widget-music">
+                            <span class="music-icon">🎵</span>
+                            <span class="music-text">Notre playlist</span>
+                        </div>
+
+                        <!-- WIDGET 6 : Compte à rebours (placeholder) -->
+                        <div class="widget-card widget-countdown">
+                            <span class="countdown-number">—</span>
+                            <span class="countdown-label">Prochain rendez-vous</span>
+                        </div>
+
+                        <!-- WIDGET 7 : Citation du jour (placeholder) -->
+                        <div class="widget-card widget-quote">
+                            <span class="quote-icon">❝</span>
+                            <p class="quote-text">Chaque moment avec toi est un cadeau.</p>
+                        </div>
+
+                        <!-- WIDGET 8 : Stats / Badges (placeholder) -->
+                        <div class="widget-card widget-stats">
+                            <span class="stats-icon">🏆</span>
+                            <span class="stats-value">0</span>
+                            <span class="stats-label">Badges débloqués</span>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- =================================================
+                     ONGLET 2 : MON ESPACE (Profil & Humeur perso)
+                     ================================================= -->
+                <div id="tab-profile" class="tab-content">
+                    <div class="widget mood-widget">
+                        <div class="widget-header">
+                            <h3>💛 Mon humeur du jour</h3>
+                            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">
+                                Comment te sens-tu aujourd'hui ?
+                            </p>
+                        </div>
+
+                        <div class="mood-selector" id="mood-selector">
+                            <button class="mood-btn" data-mood="😊">😊</button>
+                            <button class="mood-btn" data-mood="🥰">🥰</button>
+                            <button class="mood-btn" data-mood="😴">😴</button>
+                            <button class="mood-btn" data-mood="😤">😤</button>
+                            <button class="mood-btn" data-mood="😢">😢</button>
+                            <button class="mood-btn" data-mood="🤤">🤤</button>
+                            <button class="mood-btn" data-mood="🥵">🥵</button>
+                            <button class="mood-btn" data-mood="🤗">🤗</button>
+                        </div>
+                        <p id="my-mood-text" class="my-mood-text">
+                            Choisis ton humeur ci-dessous 👇
+                        </p>
+                    </div>
+
+                    <!-- Placeholder musique du moment -->
+                    <div class="widget" style="text-align: center; padding: 30px 20px; opacity: 0.6;">
+                        <p>🎵 Ta musique du moment arrivera ici</p>
+                    </div>
+                </div>
+
+                <!-- =================================================
+                     ONGLET 3 : JE PENSE À TOI (Stats & Badges)
+                     ================================================= -->
+                <div id="tab-think" class="tab-content">
+                    <div class="widget think-widget-detail">
+                        <div class="widget-header">
+                            <h3>💭 Mes "Je pense à toi"</h3>
+                            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">
+                                Tes stats et badges
+                            </p>
+                        </div>
+
+                        <!-- Bouton reset (tests uniquement) -->
+                        <button id="reset-think-btn" style="margin-top: 20px; padding: 10px 20px; background: #E0D5C7; border: none; border-radius: 12px; color: var(--primary-dark); font-size: 0.8rem; cursor: pointer; opacity: 0.6;">
+                            🔄 Reset (tests)
+                        </button>
+
+                        <!-- Stats personnelles -->
+                        <div class="think-stats-detail">
+                            <div class="think-stat-big">
+                                <span class="think-stat-value" id="my-total">0</span>
+                                <span class="think-stat-label">Total envoyés</span>
+                            </div>
+                            <div class="think-stat-divider-v"></div>
+                            <div class="think-stat-big">
+                                <span class="think-stat-value" id="my-streak">0</span>
+                                <span class="think-stat-label">Jours consécutifs 🔥</span>
+                            </div>
+                        </div>
+
+                        <!-- Stats de l'autre personne -->
+                        <div class="think-received">
+                            <p><span id="other-think-name">...</span> t'a envoyé</p>
+                            <span class="think-received-number" id="other-total">0</span>
+                            <p>"Je pense à toi"</p>
+                        </div>
+
+                        <!-- Badges à débloquer -->
+                        <div class="think-badges">
+                            <h4>🏆 Badges</h4>
+                            <div class="badges-grid">
+                                <div class="badge-item locked" id="badge-7">
+                                    <span class="badge-icon">🌱</span>
+                                    <span class="badge-name">7 jours</span>
+                                </div>
+                                <div class="badge-item locked" id="badge-30">
+                                    <span class="badge-icon">🌸</span>
+                                    <span class="badge-name">30 jours</span>
+                                </div>
+                                <div class="badge-item locked" id="badge-100">
+                                    <span class="badge-icon">💎</span>
+                                    <span class="badge-name">100 jours</span>
+                                </div>
+                                <div class="badge-item locked" id="badge-365">
+                                    <span class="badge-icon">👑</span>
+                                    <span class="badge-name">365 jours</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+            <!-- =====================================================
+                 BARRE DE NAVIGATION DU BAS
+                 ===================================================== -->
+            <nav class="bottom-nav">
+                <button class="nav-btn active" data-tab="tab-home">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-text">Accueil</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-think">
+                    <span class="nav-icon">💭</span>
+                    <span class="nav-text">Pensées</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-profile">
+                    <span class="nav-icon">🤍</span>
+                    <span class="nav-text">Moi</span>
+                </button>
+            </nav>
+
+        </div>
+
+        <!-- =========================================================
+             LIGHTBOX (affichage photo en grand)
+             Placée en dehors du main pour être au-dessus de tout
+             ========================================================= -->
+        <div id="lightbox" class="lightbox">
+            <button class="lightbox-close" id="lightbox-close">✕</button>
+            <img id="lightbox-img" src="" alt="Photo en grand">
+        </div>
+
+    </div>
+
+    <script type="module" src="/js/app.js"></script>
+</body>
+</html>

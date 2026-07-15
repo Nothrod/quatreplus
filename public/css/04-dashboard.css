@@ -1,0 +1,132 @@
+/* =========================================
+   DASHBOARD (Photo + Résumé)
+   ========================================= */
+.dashboard-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.dashboard-photo {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #E8E0D5;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(139, 115, 85, 0.1);
+}
+
+.dashboard-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.dashboard-photo:active img {
+    transform: scale(1.05);
+}
+
+.photo-fallback {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #E8E0D5;
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.fallback-icon {
+    font-size: 2rem;
+    opacity: 0.5;
+}
+
+.photo-overlay-mini {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 1rem;
+    z-index: 2;
+    transition: transform 0.2s;
+}
+
+.photo-overlay-mini:active {
+    transform: scale(0.9);
+}
+
+.dashboard-summary {
+    background: var(--card-bg);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 16px rgba(139, 115, 85, 0.08);
+    position: relative;
+}
+
+.summary-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    justify-content: center;
+}
+
+.summary-label {
+    font-size: 0.7rem;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.summary-value {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+    line-height: 1;
+}
+
+.summary-unit {
+    font-size: 0.75rem;
+    color: var(--primary);
+    margin-top: 2px;
+}
+
+.summary-emoji {
+    font-size: 2.5rem;
+    line-height: 1;
+}
+
+.summary-divider {
+    height: 1px;
+    background: #E0D5C7;
+    margin: 4px 0;
+}
+
+.photo-author-text {
+    position: absolute;
+    bottom: 6px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 0.65rem;
+    color: var(--primary);
+    font-style: italic;
+}
