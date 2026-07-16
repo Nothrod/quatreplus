@@ -1,168 +1,16 @@
 /* =========================================
- *  DASHBOARD (Grille 2×4 = 8 widgets)
+ *  DASHBOARD - GRILLE 2×4 (8 WIDGETS)
  *  ========================================= */
 
-/* ✅ GRILLE PRINCIPALE : 2 colonnes, 4 lignes automatiques */
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 colonnes égales */
-    grid-auto-rows: minmax(150px, auto); /* Chaque ligne fait au moins 150px de haut */
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: minmax(150px, auto);
     gap: 16px;
-    padding-bottom: 80px; /* Espace pour la barre de navigation */
+    padding-bottom: 80px;
 }
 
-/* ✅ WIDGET 1 : Photo partagée (format carré forcé) */
-.widget-photo {
-    position: relative;
-    width: 100%;
-    aspect-ratio: 1 / 1; /* Carré parfait */
-    border-radius: 20px;
-    overflow: hidden;
-    background-color: #E8E0D5;
-    cursor: pointer;
-    box-shadow: 0 4px 16px rgba(139, 115, 85, 0.1);
-}
-
-.widget-photo img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-    transition: transform 0.3s ease;
-}
-
-.widget-photo:active img {
-    transform: scale(1.05);
-}
-
-/* Overlay pour l'upload de photo */
-.photo-overlay {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: opacity 0.2s ease;
-    cursor: pointer;
-    z-index: 2;
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.widget-photo:hover .photo-overlay,
-.widget-photo:active .photo-overlay {
-    opacity: 1;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.photo-overlay span {
-    font-size: 2.5rem;
-    color: white;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.4);
-}
-
-/* Fallback si pas de photo */
-.photo-fallback {
-    position: absolute;
-    top: 0; left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: #E8E0D5;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1;
-}
-
-.fallback-icon {
-    font-size: 2rem;
-    opacity: 0.5;
-}
-
-/* =========================================
- *  BOUTONS D'ACTION SUR LA PHOTO
- *  ========================================= */
-
-/* ✅ Bouton pour changer la photo (en bas à gauche) */
-.photo-change-btn {
-    position: absolute;
-    bottom: 8px;
-    left: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    font-size: 0.9rem;
-    z-index: 3;
-    transition: all 0.2s ease;
-    opacity: 0.7;
-}
-
-.photo-change-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
-    background: white;
-}
-
-.photo-change-btn:active {
-    transform: scale(0.95);
-}
-
-/* ✅ Bouton pour agrandir la photo (en bas à droite) */
-.photo-expand-btn {
-    position: absolute;
-    bottom: 8px;
-    right: 8px;
-    background: rgba(255, 255, 255, 0.9);
-    border: none;
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    font-size: 0.9rem;
-    z-index: 3;
-    transition: all 0.2s ease;
-    opacity: 0.7;
-}
-
-.photo-expand-btn:hover {
-    opacity: 1;
-    transform: scale(1.1);
-    background: white;
-}
-
-.photo-expand-btn:active {
-    transform: scale(0.95);
-}
-
-/* ✅ Texte de l'auteur (en bas au centre) */
-.photo-author-text {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(255, 255, 255, 0.85);
-    padding: 2px 10px;
-    border-radius: 12px;
-    font-size: 0.65rem;
-    color: var(--primary-dark);
-    font-style: italic;
-    z-index: 2;
-    white-space: nowrap;
-}
-
-/* ✅ STYLE GÉNÉRIQUE POUR TOUS LES WIDGETS DE LA GRILLE */
+/* Style générique pour tous les widgets de la grille */
 .widget-card {
     background: var(--card-bg);
     border-radius: 20px;
@@ -180,369 +28,97 @@
     transform: scale(0.98);
 }
 
-/* ✅ WIDGET 2 : Jours d'amitié + Humeur */
-.widget-friendship-mood {
-    gap: 12px;
-}
-
-.friendship-days {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.friendship-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--primary-dark);
-    line-height: 1;
-}
-
-.friendship-label {
-    font-size: 0.75rem;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    margin-top: 4px;
-}
-
-.mood-mini-display {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    padding-top: 12px;
-    border-top: 1px solid #E0D5C7;
-    width: 100%;
-}
-
-.mood-mini-label {
-    font-size: 0.65rem;
-    color: var(--primary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
 /* =========================================
- *  BOUTON "JE PENSE À TOI" - VERSION GLOSSY
+ *  WIDGET 1 : PHOTO PARTAGÉE
  *  ========================================= */
+.widget-photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 20px;
+    overflow: hidden;
+    background-color: #E8E0D5;
+    cursor: pointer;
+    padding: 0;
+}
 
-.think-btn-compact {
+.widget-photo img {
     width: 100%;
     height: 100%;
-    padding: 16px;
-    /* Dégradé glossy : reflet clair en haut, rose au milieu, rose foncé en bas */
-    background: linear-gradient(180deg, #FAD0D4 0%, var(--pink) 40%, var(--pink-dark) 100%);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    border-radius: 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    /* Ombre portée douce + reflet intérieur (highlight) sur le bord supérieur */
-    box-shadow:
-    0 6px 20px rgba(201, 138, 138, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
-    overflow: hidden;
-    text-align: left;
-    position: relative;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
 }
 
-/* ✅ Reflet brillant supplémentaire (effet verre/verni sur la moitié haute) */
-.think-btn-compact::before {
-    content: '';
+.widget-photo:active img {
+    transform: scale(1.05);
+}
+
+.photo-fallback {
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 50%;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
-    border-radius: 20px 20px 40% 40%;
-    pointer-events: none; /* Laisse passer les clics */
-}
-
-/* ✅ Texte en blanc pour un contraste parfait sur le fond rose foncé */
-.think-text {
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #FFFFFF;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    line-height: 1.2;
-    max-width: 100%;
-    z-index: 1; /* Au-dessus du reflet */
-}
-
-.think-subtitle {
-    font-size: 0.75rem;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    line-height: 1.2;
-    max-width: 100%;
-    z-index: 1;
-}
-
-.think-icon {
-    font-size: 2rem;
-    line-height: 1;
-    animation: heartbeat 2.5s infinite ease-in-out;
-    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
-    z-index: 1;
-}
-
-/* État au clic (enfoncé) */
-.think-btn-compact:active:not(:disabled) {
-    transform: scale(0.96);
-    box-shadow:
-    0 2px 8px rgba(201, 138, 138, 0.5),
-    inset 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-/* ✅ État "Déjà envoyé" (Glossy mais dans les tons neutres/désactivés) */
-.think-btn-compact.sent {
-    background: linear-gradient(180deg, #F2EBE3 0%, #E0D5C7 40%, #C4A484 100%);
-    border-color: rgba(255, 255, 255, 0.4);
-    box-shadow:
-    0 4px 12px rgba(139, 115, 85, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.6);
-    cursor: default;
-}
-
-/* ✅ CORRECTION AJOUTÉE : Masque le cœur et centre le texte quand envoyé */
-.think-btn-compact.sent .think-icon {
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-color: #E8E0D5;
     display: none;
-}
-
-.think-btn-compact.sent .think-content {
+    justify-content: center;
     align-items: center;
-    text-align: center;
-    width: 100%;
+    z-index: 1;
 }
 
-.think-btn-compact.sent .think-text,
-.think-btn-compact.sent .think-subtitle {
-    color: #FFFFFF;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* ✅ WIDGETS 4-8 : Placeholders génériques */
-.widget-weather,
-.widget-music,
-.widget-countdown,
-.widget-quote,
-.widget-stats {
-    gap: 8px;
-}
-
-.widget-weather .weather-icon,
-.widget-music .music-icon,
-.widget-countdown .countdown-number,
-.widget-quote .quote-icon,
-.widget-stats .stats-icon {
+.fallback-icon {
     font-size: 2rem;
-    line-height: 1;
+    opacity: 0.5;
 }
 
-.widget-weather .weather-temp,
-.widget-countdown .countdown-number,
-.widget-stats .stats-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--primary-dark);
-    line-height: 1;
-}
-
-.widget-weather .weather-desc,
-.widget-music .music-text,
-.widget-countdown .countdown-label,
-.widget-quote .quote-text,
-.widget-stats .stats-label {
-    font-size: 0.75rem;
-    color: var(--primary);
-    text-align: center;
-}
-
-.widget-quote .quote-text {
-    font-style: italic;
-    font-size: 0.8rem;
-}
-
-/* =========================================
- *  WIDGET MUSIQUE DU MOMENT (1 case)
- *  ========================================= */
-
-.widget-music {
-    gap: 12px;
-    padding: 16px;
-    /* ✅ Plus de grid-column: span 2, il prend 1 case comme les autres */
-}
-
-.music-header {
+.photo-change-btn,
+.photo-expand-btn {
+    position: absolute;
+    bottom: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     display: flex;
+    justify-content: center;
     align-items: center;
-    gap: 6px;
-    width: 100%;
-}
-
-.music-icon {
-    font-size: 1.2rem;
-    line-height: 1;
-}
-
-.music-title-label {
-    font-size: 0.7rem;
-    color: var(--primary-dark);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.music-content {
-    display: flex;
-    flex-direction: column; /* ✅ Vertical au lieu d'horizontal */
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-}
-
-.music-info {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-}
-
-.music-track {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-}
-
-.music-track-title {
-    font-size: 0.95rem; /* ✅ Réduit */
-    font-weight: 700;
-    color: var(--primary-dark);
-    line-height: 1.2;
-    text-align: center;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-}
-
-.music-track-artist {
-    font-size: 0.75rem; /* ✅ Réduit */
-    color: var(--primary);
-    font-weight: 500;
-    text-align: center;
-}
-
-.music-youtube-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 6px 12px; /* ✅ Plus petit */
-    background: linear-gradient(135deg, #FF0000 0%, #CC0000 100%);
-    color: white;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 0.7rem; /* ✅ Réduit */
-    font-weight: 600;
-    transition: all 0.2s ease;
-    box-shadow: 0 2px 6px rgba(255, 0, 0, 0.2);
-}
-
-.music-youtube-link:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 3px 8px rgba(255, 0, 0, 0.3);
-}
-
-.music-youtube-link:active {
-    transform: translateY(0);
-}
-
-.youtube-icon {
-    font-size: 0.8rem;
-}
-
-.music-author {
-    font-size: 0.65rem;
-    color: var(--primary);
-    font-style: italic;
-    text-align: center;
-    margin-top: 2px;
-}
-
-/* =========================================
- *  WIDGET ÉDITION MUSIQUE (Onglet Moi)
- *  ========================================= */
-
-.music-edit-widget {
-    /* Pas de grid-column, prend 1 case normale */
-}
-
-.music-edit-form {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 16px;
-}
-
-.music-edit-form input {
-    width: 100%;
-    padding: 12px 16px;
-    border: 2px solid #E0D5C7;
-    border-radius: 12px;
-    font-size: 0.9rem;
-    color: var(--text);
-    transition: border-color 0.2s ease;
-    background: white;
-}
-
-.music-edit-form input:focus {
-    outline: none;
-    border-color: var(--primary);
-}
-
-.music-save-btn-full {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
     cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    font-size: 0.9rem;
+    z-index: 3;
     transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(139, 115, 85, 0.2);
-    margin-top: 4px;
+    opacity: 0.8;
+    border: none;
 }
 
-.music-save-btn-full:active {
-    transform: scale(0.98);
-    box-shadow: 0 2px 6px rgba(139, 115, 85, 0.3);
+.photo-change-btn { left: 8px; }
+.photo-expand-btn { right: 8px; }
+
+.photo-change-btn:active,
+.photo-expand-btn:active {
+    transform: scale(0.9);
 }
 
-.music-current-info {
-    margin-top: 20px;
-    padding: 16px;
-    background: var(--pink-light);
+.photo-author-text {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    padding: 2px 10px;
     border-radius: 12px;
-    border: 1px solid rgba(230, 184, 184, 0.3);
+    font-size: 0.65rem;
+    color: var(--primary-dark);
+    font-style: italic;
+    z-index: 2;
+    white-space: nowrap;
 }
 
 /* =========================================
- *  WIDGET NIVEAU D'AMITIÉ (Accueil)
+ *  WIDGET 2 : NIVEAU D'AMITIÉ
  *  ========================================= */
-
 .widget-friendship-level {
     gap: 12px;
-    padding: 20px;
+    padding: 16px;
 }
 
 .friendship-level-display {
@@ -568,14 +144,14 @@
 }
 
 .level-number {
-    font-size: 2.5rem;
+    font-size: 2.2rem;
     font-weight: 700;
     color: var(--primary-dark);
     line-height: 1;
 }
 
 .level-plus {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: var(--primary);
 }
@@ -591,7 +167,6 @@
 .progress-bar {
     height: 100%;
     background: linear-gradient(90deg, var(--primary) 0%, var(--pink) 100%);
-    transition: width 0.5s ease;
     border-radius: 3px;
 }
 
@@ -617,201 +192,171 @@
 }
 
 /* =========================================
- *  WIDGET GESTION NIVEAU (Onglet Moi)
+ *  WIDGET 3 : "JE PENSE À TOI" (GLOSSY)
  *  ========================================= */
-
-.friendship-level-widget {
-    /* Style standard de widget */
-}
-
-.friendship-current-info {
-    text-align: center;
-    padding: 20px;
-    background: var(--pink-light);
-    border-radius: 16px;
-    margin-bottom: 20px;
-}
-
-.friendship-adjust-form {
-    margin-top: 20px;
-}
-
-.level-selector {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 8px;
-    margin-bottom: 16px;
-}
-
-.level-btn {
-    padding: 12px;
-    background: white;
-    border: 2px solid #E0D5C7;
-    border-radius: 12px;
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--primary-dark);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.level-btn:hover {
-    border-color: var(--primary);
-    background: var(--pink-light);
-}
-
-.level-btn.selected {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
-    border-color: var(--primary-dark);
-    color: white;
-    transform: scale(1.05);
-}
-
-.level-btn:active {
-    transform: scale(0.95);
-}
-
-.friendship-propose-btn-full {
-    width: 100%;
-    padding: 14px;
-    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dark) 100%);
-    border: none;
-    border-radius: 12px;
-    color: white;
-    font-size: 1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(230, 184, 184, 0.3);
-}
-
-.friendship-propose-btn-full:active {
-    transform: scale(0.98);
-}
-
-.friendship-propose-btn-full:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.friendship-pending-info {
-    margin-top: 20px;
-    padding: 16px;
-    background: #FFF5E1;
-    border: 2px solid #FFD700;
-    border-radius: 12px;
-    text-align: center;
-}
-
-/* =========================================
- *  POPUP DE VALIDATION
- *  ========================================= */
-
-.friendship-popup {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(74, 64, 54, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 3000;
-    backdrop-filter: blur(10px);
-}
-
-.friendship-popup.active {
-    display: flex;
-    animation: fadeIn 0.3s ease;
-}
-
-.friendship-popup-content {
-    background: linear-gradient(135deg, #FFFFFF 0%, var(--pink-light) 100%);
-    border: 3px solid var(--pink);
-    border-radius: 24px;
-    padding: 40px 30px;
-    max-width: 340px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 20px 60px rgba(230, 184, 184, 0.5);
-    animation: popupHeartbeat 1.5s infinite ease-in-out;
-}
-
-.popup-heart {
-    font-size: 4rem;
-    margin-bottom: 16px;
-    display: block;
-}
-
-.popup-title {
-    font-size: 1.3rem;
-    color: var(--pink-dark);
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.popup-text {
-    font-size: 1rem;
-    color: var(--text);
-    margin-bottom: 24px;
-    line-height: 1.4;
-}
-
-.popup-actions {
-    display: flex;
-    gap: 12px;
-}
-
-.popup-btn {
-    flex: 1;
-    padding: 14px;
-    border: none;
-    border-radius: 12px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.popup-btn-primary {
-    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dark) 100%);
-    color: white;
-    box-shadow: 0 4px 12px rgba(230, 184, 184, 0.4);
-}
-
-.popup-btn-primary:active {
-    transform: scale(0.96);
-}
-
-.popup-btn-secondary {
-    background: #E0D5C7;
-    color: var(--primary-dark);
-}
-
-.popup-btn-secondary:active {
-    transform: scale(0.96);
-}
-
-/* ✅ WIDGET 3 : "Je pense à toi" */
 .widget-think-compact {
     padding: 0;
     overflow: hidden;
-    min-height: 150px; /* ✅ Force une hauteur minimale */
+    min-height: 150px;
 }
 
-.widget-think-compact .think-btn-compact {
-    min-height: 150px; /* ✅ Force le bouton à avoir cette hauteur */
+.think-btn-compact {
     width: 100%;
     height: 100%;
+    padding: 16px;
+    background: linear-gradient(180deg, #FAD0D4 0%, var(--pink) 40%, var(--pink-dark) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 6px 20px rgba(201, 138, 138, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    overflow: hidden;
+    text-align: left;
+    position: relative;
 }
 
-/* ✅ Empêche le contenu de l'onglet Profil/Paramètres d'être caché sous la barre de navigation */
-#tab-profile {
-padding-bottom: 100px;
+.think-btn-compact::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 20px 20px 40% 40%;
+    pointer-events: none;
 }
 
-/* Sécurité supplémentaire pour s'assurer que le bouton est bien visible */
-.friendship-propose-btn-full {
-    margin-bottom: 20px; /* Espace sous le bouton */
+.think-btn-compact:active:not(:disabled) {
+    transform: scale(0.96);
+}
+
+.think-btn-compact.sent {
+    background: linear-gradient(180deg, #F2EBE3 0%, #E0D5C7 40%, #C4A484 100%);
+    border-color: rgba(255, 255, 255, 0.4);
+    cursor: default;
+}
+
+.think-btn-compact.sent .think-icon {
+    display: none;
+}
+
+.think-btn-compact.sent .think-content {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+}
+
+.think-icon {
+    font-size: 2rem;
+    line-height: 1;
+    animation: heartbeat 2.5s infinite ease-in-out;
+    z-index: 1;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.think-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    z-index: 1;
+}
+
+.think-text {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #FFFFFF;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}
+
+.think-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+/* =========================================
+ *  WIDGETS 4-8 : PLACEHOLDERS
+ *  ========================================= */
+.widget-weather,
+.widget-music,
+.widget-countdown,
+.widget-quote,
+.widget-stats {
+    gap: 8px;
+    padding: 16px;
+}
+
+.widget-weather .weather-icon,
+.widget-countdown .countdown-number,
+.widget-quote .quote-icon,
+.widget-stats .stats-icon {
+    font-size: 2rem;
+    line-height: 1;
+}
+
+.widget-weather .weather-temp,
+.widget-countdown .countdown-number,
+.widget-stats .stats-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-dark);
+}
+
+.widget-weather .weather-desc,
+.widget-countdown .countdown-label,
+.widget-quote .quote-text,
+.widget-stats .stats-label {
+    font-size: 0.7rem;
+    color: var(--primary);
+}
+
+.widget-quote .quote-text {
+    font-style: italic;
+}
+
+
+/* ==========================================
+ *  CORRECTION : Masquer les popups et overlays par défaut
+ *  ========================================== */
+
+/* 1. Masquer tous les éléments de type popup/modal par défaut */
+.lightbox,
+.think-popup,
+.friendship-popup,
+.modal-overlay {
+    display: none !important;       /* Force le masquage */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;                  /* S'assure qu'ils passent au-dessus QUAND actifs */
+    pointer-events: none;           /* Empêche de bloquer les clics quand cachés */
+}
+
+/* 2. Les afficher UNIQUEMENT quand la classe "active" est ajoutée par le JS */
+.lightbox.active,
+.think-popup.active,
+.friendship-popup.active,
+.modal-overlay.active {
+    display: flex !important;       /* Ou 'block' selon votre design */
+    justify-content: center;
+    align-items: center;
+    pointer-events: auto;           /* Réactive les clics quand visible */
+}
+
+/* 3. Sécurité pour les écrans (Login vs Main) */
+.screen {
+    display: none;
+}
+.screen.active {
+    display: flex; /* Ou 'block' si votre layout le demande */
+    flex-direction: column;
 }

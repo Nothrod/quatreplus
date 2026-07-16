@@ -17,20 +17,23 @@ export function initMusicWidget() {
     const musicSaveBtn = document.getElementById('music-save-btn');
 
     if (!musicTitle || !musicArtist) {
-        console.error("❌ ERREUR : Les éléments HTML du widget musique sont introuvables ! Vérifie les IDs dans index.html");
-        return; // On arrête tout pour éviter un plantage
+        console.error("❌ ERREUR : Les éléments HTML du widget musique sont introuvables !");
+        return;
     }
 
     // === 2. Charger la musique de L'AUTRE (Accueil) ===
     async function loadOtherMusic() {
         try {
             console.log("📡 Appel API : /api/music");
-            const res = await fetch('/api/music');
+            const res = await fetch('/api/music', { credentials: 'include' }); // ✨ Ajouté pour la cohérence des sessions
             const data = await res.json();
             console.log("📦 Réponse API (autre) :", data);
 
             if (data.title && data.artist) {
+                // ✨ CAS : Il y a une musique
                 musicTitle.textContent = data.title;
+                musicTitle.removeAttribute('data-empty');
+
                 musicArtist.textContent = data.artist;
 
                 if (data.url) {
@@ -39,9 +42,17 @@ export function initMusicWidget() {
                 } else {
                     musicLink.style.display = 'none';
                 }
-                musicAuthor.textContent = data.updatedBy ? `Ajouté par ${data.updatedBy}` : '';
+
+                // ✨ MODIFICATION : On laisse vide, on n'affiche plus "Ajouté par..."
+                musicAuthor.textContent = '';
             } else {
+                // ✨ CAS : Il n'y a PAS de musique
                 console.log("ℹ️ Aucune musique de l'autre à afficher.");
+                musicTitle.textContent = '';
+                musicTitle.setAttribute('data-empty', 'true');
+                musicArtist.textContent = '';
+                musicLink.style.display = 'none';
+                musicAuthor.textContent = '';
             }
         } catch (err) {
             console.error("❌ Erreur chargement musique autre:", err);
@@ -52,7 +63,7 @@ export function initMusicWidget() {
     async function loadMyMusic() {
         try {
             console.log("📡 Appel API : /api/music/mine");
-            const res = await fetch('/api/music/mine');
+            const res = await fetch('/api/music/mine', { credentials: 'include' }); // ✨ Ajouté
             const data = await res.json();
             console.log("📦 Réponse API (moi) :", data);
 
@@ -67,6 +78,13 @@ export function initMusicWidget() {
                     ? `Modifié le ${new Date(data.updatedAt).toLocaleDateString('fr-FR')}`
                     : '';
                 }
+            } else {
+                // ✨ Reset propre si l'utilisateur a effacé sa musique
+                if (titleInput) titleInput.value = '';
+                if (artistInput) artistInput.value = '';
+                if (urlInput) urlInput.value = '';
+                if (musicCurrentDisplay) musicCurrentDisplay.textContent = 'Aucune musique définie';
+                if (musicCurrentAuthor) musicCurrentAuthor.textContent = '';
             }
         } catch (err) {
             console.error("❌ Erreur chargement ma musique:", err);
@@ -81,7 +99,7 @@ export function initMusicWidget() {
             const url = urlInput.value.trim();
 
             if (!title || !artist) {
-                alert('Merci de remplir le titre et l\'artiste');
+                alert('Merci de remplir au moins le titre et l\'artiste 🎵');
                 return;
             }
 
@@ -89,26 +107,30 @@ export function initMusicWidget() {
                 const res = await fetch('/api/music', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include', // ✨ Ajouté
                     body: JSON.stringify({ title, artist, url })
                 });
 
                 const data = await res.json();
 
                 if (data.success) {
+                    // ✨ Petit effet visuel de confirmation
+                    const originalText = musicSaveBtn.textContent;
                     musicSaveBtn.textContent = '✅ Sauvegardé !';
                     musicSaveBtn.style.background = 'linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%)';
+
                     setTimeout(() => {
-                        musicSaveBtn.textContent = '💾 Sauvegarder';
+                        musicSaveBtn.textContent = originalText;
                         musicSaveBtn.style.background = '';
                     }, 2000);
 
                     loadMyMusic();
-                    loadOtherMusic();
+                    loadOtherMusic(); // Met à jour l'accueil immédiatement
                 } else {
                     alert(data.error || 'Erreur lors de la sauvegarde');
                 }
             } catch (err) {
-                alert('Erreur de connexion');
+                alert('Erreur de connexion au serveur');
                 console.error(err);
             }
         });

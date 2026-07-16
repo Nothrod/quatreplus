@@ -3,3 +3,10 @@ node_modules/
 .env
 *.log
 .DS_Store
+# Sessions SQLite
+   data/sessions.sqlite
+   data/sessions.sqlite-journal
+# Sessions persistantes
+data/sessions/
+# Sessions persistantes
+data/sessions.json

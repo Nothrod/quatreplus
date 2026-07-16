@@ -1,6 +1,20 @@
 // public/js/map.js
 export function initMap() {
-    console.log('🗺️ Module Carte chargé (en attente d\'affichage)');
+    console.log('🗺️ Module Carte chargé');
+
+    // 1️⃣ SÉLECTION SÉCURISÉE DES ÉLÉMENTS DU DOM
+    const mapContainer = document.getElementById('map-container');
+    const addBtn = document.getElementById('add-memory-btn');
+    const modal = document.getElementById('memory-modal');
+    const closeBtn = modal ? modal.querySelector('.modal-close') : null;
+    const form = document.getElementById('memory-form');
+    const dateInput = document.getElementById('memory-date');
+
+    // Si le conteneur de la carte n'existe pas, on arrête tout proprement sans faire planter l'app
+    if (!mapContainer) {
+        console.warn('⚠️ #map-container introuvable. Initialisation de la carte annulée pour le moment.');
+        return;
+    }
 
     let map = null;
     let markers = [];
@@ -8,13 +22,13 @@ export function initMap() {
     let selectedLat = null;
     let selectedLng = null;
     let isInitialized = false;
-    let memoriesData = []; // Stocke les données en mémoire
+    let memoriesData = [];
 
     const DEFAULT_LAT = 47.1536;
     const DEFAULT_LNG = 6.5553;
     const DEFAULT_ZOOM = 13;
 
-    // 1️⃣ Fonction pour initialiser ou "réveiller" la carte
+    // 2️⃣ Fonction pour initialiser ou "réveiller" la carte
     function ensureMapIsReady() {
         if (!isInitialized) {
             console.log('📍 Initialisation de la carte Leaflet');
@@ -22,7 +36,7 @@ export function initMap() {
 
             map = L.map('map-container', {
                 zoomControl: false,
-                tap: true // Force l'activation du tactile sur mobile
+                tap: true
             }).setView([DEFAULT_LAT, DEFAULT_LNG], DEFAULT_ZOOM);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -30,15 +44,10 @@ export function initMap() {
                 maxZoom: 19
             }).addTo(map);
 
-            // Ajouter les marqueurs déjà chargés en mémoire
             memoriesData.forEach(addMarkerToMap);
 
-            // Gestion du clic sur la carte pour ajouter un point
             map.on('click', function(e) {
-                // 1️⃣ Fermer tout popup ouvert pour éviter les conflits de clic
                 map.closePopup();
-
-                // 2️⃣ Ignorer si on clique sur un marqueur existant
                 if (e.originalEvent.target.closest('.leaflet-marker-icon')) return;
 
                 selectedLat = e.latlng.lat;
@@ -53,8 +62,6 @@ export function initMap() {
                 openModal();
             });
         } else {
-            // 2️⃣ CRUCIAL : Si la carte existe déjà, on la force à recalculer sa taille
-            // C'est ce qui répare le bug quand on change d'onglet (display: none -> block)
             setTimeout(() => {
                 if (map) map.invalidateSize();
             }, 100);
@@ -130,118 +137,144 @@ export function initMap() {
         }
     }
 
-    // Charger les données en arrière-plan dès le début
     async function loadMemories() {
         try {
             const res = await fetch('/api/map/memories');
             const data = await res.json();
-            memoriesData = data.memories;
+            memoriesData = data.memories || [];
 
-            // Si la carte est déjà visible, on affiche les points tout de suite
-            if (isInitialized && map) {
+            if (isInitialized && map && memoriesData.length > 0) {
                 memoriesData.forEach(addMarkerToMap);
-                if (memoriesData.length > 0) {
-                    const group = new L.featureGroup(markers);
-                    map.fitBounds(group.getBounds().pad(0.3));
-                }
+                const group = new L.featureGroup(markers);
+                map.fitBounds(group.getBounds().pad(0.3));
             }
         } catch (err) {
             console.error('Erreur chargement carte:', err);
         }
     }
 
-    // 3️⃣ Déclencher l'initialisation QUAND on clique sur l'onglet Carte
+    // 3️⃣ FONCTIONS ET ÉCOUTEURS D'ÉVÉNEMENTS SÉCURISÉS
+
+    function openModal() {
+        // ✅ CORRECTION : On vérifie que le champ date existe avant de lui assigner une valeur
+        if (dateInput) {
+            dateInput.valueAsDate = new Date();
+        }
+        if (modal) {
+            modal.classList.add('active');
+        }
+    }
+
+    function resetAddButton() {
+        if (addBtn) {
+            addBtn.innerHTML = '<span>📍</span><span>Ajouter un souvenir</span>';
+            addBtn.disabled = false;
+        }
+    }
+
+    // ✅ CORRECTION : On n'attache l'événement que si le bouton existe
+    if (addBtn) {
+        addBtn.addEventListener('click', () => {
+            ensureMapIsReady();
+            alert("📍 Cliquez maintenant n'importe où sur la carte pour placer votre épingle !");
+        });
+    }
+
+    // ✅ CORRECTION : On vérifie que closeBtn et form existent
+    if (closeBtn && modal && form) {
+        closeBtn.addEventListener('click', () => {
+            modal.classList.remove('active');
+            form.reset();
+            if (tempMarker && map) {
+                map.removeLayer(tempMarker);
+                tempMarker = null;
+            }
+            selectedLat = null;
+            selectedLng = null;
+            resetAddButton();
+        });
+    }
+
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('active');
+                if (form) form.reset();
+                if (tempMarker && map) {
+                    map.removeLayer(tempMarker);
+                    tempMarker = null;
+                }
+                selectedLat = null;
+                selectedLng = null;
+                resetAddButton();
+            }
+        });
+    }
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (!selectedLat || !selectedLng) {
+                alert("Veuillez d'abord cliquer sur la carte pour placer le lieu.");
+                return;
+            }
+
+            const title = document.getElementById('memory-title')?.value || '';
+            const desc = document.getElementById('memory-desc')?.value || '';
+            const date = document.getElementById('memory-date')?.value || '';
+
+            if (addBtn) {
+                addBtn.innerHTML = '<span>⏳</span><span>Enregistrement...</span>';
+                addBtn.disabled = true;
+            }
+
+            try {
+                const res = await fetch('/api/map/memories', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title, desc, date, lat: selectedLat, lng: selectedLng })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    memoriesData.push(data.memory);
+                    addMarkerToMap(data.memory);
+
+                    if (modal) modal.classList.remove('active');
+                              if (form) form.reset();
+
+                              if (tempMarker && map) {
+                                  map.removeLayer(tempMarker);
+                                  tempMarker = null;
+                              }
+                              selectedLat = null;
+                    selectedLng = null;
+
+                    if (map) {
+                        map.setView([data.memory.lat, data.memory.lng], 15);
+                        setTimeout(() => {
+                            const lastMarker = markers[markers.length - 1];
+                            if (lastMarker) lastMarker.openPopup();
+                        }, 300);
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Erreur lors de l\'ajout');
+            } finally {
+                resetAddButton();
+            }
+        });
+    }
+
+    // Écouteur sur l'onglet de navigation
     const mapTabBtn = document.querySelector('.nav-btn[data-tab="tab-map"]');
     if (mapTabBtn) {
         mapTabBtn.addEventListener('click', () => {
             ensureMapIsReady();
         });
     }
-
-    // Gestion de la Modal
-    const modal = document.getElementById('memory-modal');
-    const addBtn = document.getElementById('add-memory-btn');
-    const closeBtn = document.querySelector('.modal-close');
-    const form = document.getElementById('memory-form');
-
-    function openModal() {
-        document.getElementById('memory-date').valueAsDate = new Date();
-        modal.classList.add('active');
-    }
-
-    addBtn.addEventListener('click', () => {
-        ensureMapIsReady(); // S'assurer que la carte est prête avant de demander un clic
-        alert("📍 Cliquez maintenant n'importe où sur la carte pour placer votre épingle !");
-    });
-
-    closeBtn.addEventListener('click', () => {
-        modal.classList.remove('active');
-        form.reset();
-        if (tempMarker && map) {
-            map.removeLayer(tempMarker);
-            tempMarker = null;
-        }
-        selectedLat = null;
-        selectedLng = null;
-        resetAddButton();
-    });
-
-    function resetAddButton() {
-        addBtn.innerHTML = '<span>📍</span><span>Ajouter un souvenir</span>';
-        addBtn.disabled = false;
-    }
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-
-        if (!selectedLat || !selectedLng) {
-            alert("Veuillez d'abord cliquer sur la carte pour placer le lieu.");
-            return;
-        }
-
-        const title = document.getElementById('memory-title').value;
-        const desc = document.getElementById('memory-desc').value;
-        const date = document.getElementById('memory-date').value;
-
-        addBtn.innerHTML = '<span>⏳</span><span>Enregistrement...</span>';
-        addBtn.disabled = true;
-
-        try {
-            const res = await fetch('/api/map/memories', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ title, desc, date, lat: selectedLat, lng: selectedLng })
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                memoriesData.push(data.memory);
-                addMarkerToMap(data.memory);
-                modal.classList.remove('active');
-                form.reset();
-
-                          if (tempMarker && map) {
-                              map.removeLayer(tempMarker);
-                              tempMarker = null;
-                          }
-                          selectedLat = null;
-                selectedLng = null;
-
-                if (map) {
-                    map.setView([data.memory.lat, data.memory.lng], 15);
-                    setTimeout(() => {
-                        const lastMarker = markers[markers.length - 1];
-                        if (lastMarker) lastMarker.openPopup();
-                    }, 300);
-                }
-            }
-        } catch (err) {
-            console.error(err);
-            alert('Erreur lors de l\'ajout');
-        } finally {
-            resetAddButton();
-        }
-    });
 
     // Lancer le chargement des données en arrière-plan
     loadMemories();

@@ -118,11 +118,19 @@
                             <div class="music-author" id="music-author"></div>
                         </div>
 
-                        <!-- WIDGET 6 : Compte à rebours (placeholder) -->
-                        <div class="widget-card widget-countdown">
-                            <span class="countdown-number">—</span>
-                            <span class="countdown-label">Prochain RDV</span>
-                        </div>
+                        <!-- WIDGET 6 : Compte à rebours RDV -->
+<div class="widget-card widget-countdown" id="rdv-widget">
+    <span class="countdown-number" id="rdv-countdown">—</span>
+    <span class="countdown-label" id="rdv-label">Prochain RDV</span>
+
+    <button id="edit-rdv-btn" class="btn-secondary" style="margin-top: 10px; font-size: 0.75rem; padding: 6px 12px;">
+        ✏️ Modifier
+    </button>
+
+    <a id="google-calendar-link" href="#" target="_blank" rel="noopener" class="btn-primary" style="margin-top: 8px; font-size: 0.75rem; padding: 6px 12px; text-decoration: none; display: none; width: 100%; text-align: center; box-sizing: border-box;">
+        📅 Ajouter à Google Agenda
+    </a>
+</div>
 
                         <!-- WIDGET 7 : Citation du jour -->
                         <div class="widget-card widget-quote">
@@ -179,6 +187,9 @@
                             <p id="music-current-author" style="font-size: 0.75rem; color: var(--primary); font-style: italic; margin-top: 4px;"></p>
                         </div>
                     </div>
+
+
+
 
                     <!-- WIDGET GESTION NIVEAU D'AMITIÉ -->
                     <div class="widget friendship-level-widget">
@@ -278,6 +289,54 @@
                     </div>
                 </div>
 
+                <!-- =================================================
+     ONGLET QUESTION DU JOUR
+     ================================================= -->
+<div id="tab-question" class="tab-content">
+
+    <!-- Carte Question du Jour -->
+    <div class="widget question-today-widget" id="question-today-container" style="display: none;">
+        <div class="widget-header">
+            <h3>💬 Question du jour</h3>
+        </div>
+            <span id="question-category-badge" class="category-badge">...</span>
+        <p class="question-text" id="current-question-text">Chargement...</p>
+
+        <div id="answer-form-container">
+            <textarea id="my-answer-input" rows="3" placeholder="Ta réponse..."></textarea>
+            <button id="submit-answer-btn" class="btn-primary">Envoyer ma réponse 💌</button>
+        </div>
+
+        <div id="waiting-message" style="display: none; text-align: center; color: var(--primary); font-style: italic; margin-top: 15px;">
+            En attente de la réponse de l'autre... 💭
+        </div>
+    </div>
+
+
+
+    <!-- Historique -->
+    <div class="widget question-history-widget">
+        <div class="widget-header">
+            <h3>📜 Nos échanges passés</h3>
+        </div>
+         <!-- ✨ NOUVEAU : Barre de filtres par catégorie -->
+        <div class="question-filters">
+            <button class="filter-btn active" data-filter="all">Tout</button>
+            <button class="filter-btn" data-filter="je_nai_jamais">Je n'ai jamais</button>
+            <button class="filter-btn" data-filter="drole">Drôle</button>
+            <button class="filter-btn" data-filter="connaissance">Connaissance</button>
+            <button class="filter-btn" data-filter="general">Général</button>
+            <button class="filter-btn" data-filter="coquin">Coquin</button>
+            <button class="filter-btn" data-filter="hot">Hot</button>
+            <button class="filter-btn" data-filter="tres_hot">Très Hot</button>
+        </div>
+        <div id="question-history-list">
+            <!-- Les questions passées seront injectées ici par JS -->
+            <p style="text-align: center; color: #a0aec0; padding: 20px;">Aucun échange pour le moment.</p>
+        </div>
+    </div>
+</div>
+
             </main>
 
             <!-- =====================================================
@@ -287,6 +346,10 @@
                 <button class="nav-btn active" data-tab="tab-home">
                     <span class="nav-icon">🏠</span>
                     <span class="nav-text">Accueil</span>
+                </button>
+                <button class="nav-btn" data-tab="tab-question">
+                <span class="nav-icon">💬</span>
+                <span class="nav-text">Questions</span>
                 </button>
                 <button class="nav-btn" data-tab="tab-map">
                     <span class="nav-icon">📍</span>
@@ -300,15 +363,16 @@
                     <span class="nav-icon">🤍</span>
                     <span class="nav-text">Moi</span>
                 </button>
+
             </nav>
 
         </div> <!-- Fin de #main-screen -->
 
-        <!-- =========================================================
+               <!-- =========================================================
              OVERLAYS & POPUPS (En dehors du main pour être au-dessus)
              ========================================================= -->
 
-        <!-- Lightbox Photo -->
+                <!-- Lightbox Photo -->
         <div id="lightbox" class="lightbox">
             <button class="lightbox-close" id="lightbox-close">✕</button>
             <img id="lightbox-img" src="" alt="Photo en grand">
@@ -352,8 +416,29 @@
             </div>
         </div>
 
+        <!-- ✅ MODAL RDV : BIEN PLACÉ ICI, AU MÊME NIVEAU QUE LES AUTRES -->
+        <div id="rdv-modal" class="modal-overlay">
+            <div class="modal-content">
+                <button class="modal-close" id="rdv-modal-close">✕</button>
+                <h3>📅 Prochain Rendez-vous</h3>
+                <form id="rdv-form">
+                    <label style="font-size: 0.85rem; color: var(--primary-dark); font-weight: 600;">Titre</label>
+                    <input type="text" id="rdv-title-input" placeholder="Ex: Dîner au resto" required>
+
+                    <label style="font-size: 0.85rem; color: var(--primary-dark); font-weight: 600; margin-top: 10px; display: block;">Date et heure</label>
+                    <input type="datetime-local" id="rdv-date-input" required>
+
+                    <label style="font-size: 0.85rem; color: var(--primary-dark); font-weight: 600; margin-top: 10px; display: block;">Lieu (optionnel)</label>
+                    <input type="text" id="rdv-location-input" placeholder="Ex: Paris, Le Marais">
+
+                    <button type="submit" class="btn-primary" style="margin-top: 15px; width: 100%;">Enregistrer le RDV</button>
+                </form>
+            </div>
+        </div>
+
     </div> <!-- Fin de #app -->
 
     <script type="module" src="/js/app.js"></script>
 </body>
 </html>
+

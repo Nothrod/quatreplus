@@ -1,6 +1,10 @@
 /* =========================================
- *  1. WIDGETS GÉNÉRAUX & HUMEUR
+ *  ONGLET PROFIL & PARAMÈTRES
  *  ========================================= */
+#tab-profile {
+padding-bottom: 100px;
+}
+
 .widget {
     background: var(--card-bg);
     border-radius: 24px;
@@ -17,20 +21,18 @@
     letter-spacing: 0.5px;
 }
 
-.mood-mini-display {
+
+.widget-header {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 4px;
+    align-items: center; /* Centre horizontalement les éléments flex */
+    justify-content: center;
+    text-align: center; /* Centre le texte à l'intérieur des balises */
+    width: 100%;
+    margin-bottom: 15px;
 }
 
-.mood-mini-label {
-    font-size: 0.65rem;
-    color: var(--text-light);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
+/* Humeur */
 .mood-widget {
     text-align: center;
 }
@@ -56,7 +58,8 @@
     justify-content: center;
 }
 
-.mood-btn:active, .mood-btn.active {
+.mood-btn:active,
+.mood-btn.active {
     background: var(--primary);
     border-color: var(--primary-dark);
     transform: scale(0.92);
@@ -69,8 +72,216 @@
     min-height: 1.4em;
 }
 
+/* ==========================================
+ *  WIDGET 5 : MUSIQUE DU MOMENT
+ *  ========================================== */
+
+.widget-music {
+    background: linear-gradient(135deg, #fff9f9 0%, #ffffff 100%);
+    border: 1px solid rgba(230, 184, 184, 0.4);
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.widget-music:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(230, 184, 184, 0.15);
+}
+
+/* Note de musique décorative en arrière-plan */
+.widget-music::before {
+    content: '🎵';
+    position: absolute;
+    top: -15px;
+    right: -10px;
+    font-size: 5rem;
+    opacity: 0.04;
+    transform: rotate(15deg);
+    pointer-events: none;
+}
+
+.music-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* Empilement vertical : titre/artiste en haut, bouton en dessous */
+.music-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centre tout horizontalement */
+    gap: 12px;
+    width: 100%;
+}
+
+.music-track {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    text-align: center;
+}
+
+.music-track-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2d3748;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* État vide : "Aucune musique définie" */
+.music-track-title:empty::before,
+.music-track-title[data-empty="true"] {
+    content: 'Aucune musique définie';
+    color: #a0aec0;
+    font-weight: 400;
+    font-style: italic;
+    text-align: center;
+    width: 100%;
+    font-size: 0.95rem;
+    padding: 8px 0;
+}
+
+.music-track-artist {
+    font-size: 0.85rem;
+    color: #718096;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Masquer l'artiste s'il est vide */
+.music-track-artist:empty {
+    display: none;
+}
+
+/* Bouton "Écouter" centré - SANS !important */
+.music-youtube-link {
+    display: inline-flex; /* ❌ PLUS de !important */
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background-color: #e57373;
+    color: white;
+    text-decoration: none;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(229, 115, 115, 0.3);
+    margin-top: 8px;
+}
+
+.music-youtube-link:hover {
+    background-color: #ef5350;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(229, 115, 115, 0.4);
+}
+
+.youtube-icon {
+    font-size: 0.9rem;
+}
+
+/* Pied de page du widget */
+.music-author {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px dashed rgba(230, 184, 184, 0.6);
+    font-size: 0.75rem;
+    color: #a0aec0;
+    font-style: italic;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.music-author::before {
+    content: '✒️';
+    font-size: 0.8rem;
+}
+
+/* Masquer le pied de page quand il est vide */
+.music-author:empty {
+    display: none;
+}
+
+/* Friendship Level Edit */
+.friendship-current-info {
+    text-align: center;
+    padding: 20px;
+    background: var(--pink-light);
+    border-radius: 16px;
+    margin-bottom: 20px;
+}
+
+.level-selector {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.level-btn {
+    padding: 12px;
+    background: white;
+    border: 2px solid #E0D5C7;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.level-btn:hover {
+    border-color: var(--primary);
+    background: var(--pink-light);
+}
+
+.level-btn.selected {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-color: var(--primary-dark);
+    color: white;
+}
+
+.friendship-propose-btn-full {
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dark) 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 20px;
+}
+
+.friendship-propose-btn-full:active {
+    transform: scale(0.98);
+}
+
+.friendship-pending-info {
+    margin-top: 20px;
+    padding: 16px;
+    background: #FFF5E1;
+    border: 2px solid #FFD700;
+    border-radius: 12px;
+    text-align: center;
+}
+
 /* =========================================
- *  2. WIDGET "JE PENSE À TOI" (DÉTAILLÉ)
+ *  ONGLET "JE PENSE À TOI" (DÉTAILS)
  *  ========================================= */
 .think-widget-detail {
     text-align: center;
@@ -84,7 +295,6 @@
     border-radius: 20px;
     padding: 30px 20px;
     margin: 24px 0;
-    box-shadow: 0 4px 16px rgba(230, 184, 184, 0.15);
 }
 
 .think-stat-big {
@@ -138,7 +348,6 @@
     margin: 8px 0;
 }
 
-/* Badges */
 .think-badges {
     margin-top: 30px;
 }
@@ -192,7 +401,7 @@
 }
 
 /* =========================================
- *  3. WIDGET CARTE DES SOUVENIRS
+ *  WIDGET CARTE DES SOUVENIRS
  *  ========================================= */
 .map-widget {
     padding: 0;
@@ -206,16 +415,14 @@
     background: var(--card-bg);
 }
 
-/* ✅ UNIQUE DÉFINITION DU CONTENEUR CARTE (Fusionnée et optimisée) */
 #map-container {
 width: 100%;
-height: 60vh; /* Hauteur relative stable sur mobile */
+height: 60vh;
 min-height: 300px;
 background-color: #F2EBE3;
-border-radius: 0 0 16px 16px; /* Petit arrondi en bas */
+border-radius: 0 0 16px 16px;
 }
 
-/* Animation d'apparition douce de la carte */
 #map-container .leaflet-container {
 animation: fadeInMap 0.5s ease-in-out;
 }
@@ -225,7 +432,6 @@ animation: fadeInMap 0.5s ease-in-out;
     to { opacity: 1; }
 }
 
-/* ✅ CORRECTION TACTILE LEAFLET (Empêche le scroll de page de bloquer la carte) */
 .leaflet-container {
     touch-action: pan-x pan-y !important;
     cursor: grab;
@@ -235,22 +441,22 @@ animation: fadeInMap 0.5s ease-in-out;
     cursor: grabbing;
 }
 
-/* Personnalisation des popups Leaflet */
 .leaflet-popup {
     z-index: 1500 !important;
+    pointer-events: auto;
 }
 
 .leaflet-popup-pane {
     z-index: 700 !important;
-    pointer-events: none; /* Le conteneur global ne bloque jamais les clics */
-}
-
-.leaflet-popup {
-    pointer-events: auto; /* Seul le popup lui-même reste cliquable */
+    pointer-events: none;
 }
 
 .leaflet-marker-pane {
     z-index: 600 !important;
+}
+
+.leaflet-marker-icon {
+    cursor: pointer !important;
 }
 
 .leaflet-popup-content-wrapper {
@@ -267,7 +473,7 @@ animation: fadeInMap 0.5s ease-in-out;
 
 .leaflet-popup-content {
     margin: 16px;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: inherit;
 }
 
 .memory-popup-content {
@@ -296,11 +502,6 @@ animation: fadeInMap 0.5s ease-in-out;
     letter-spacing: 0.5px;
 }
 
-.leaflet-marker-icon {
-    cursor: pointer !important;
-}
-
-/* Bouton d'ajout EN DESSOUS de la carte */
 .add-memory-btn {
     margin: 16px 20px 20px;
     padding: 16px;
@@ -327,7 +528,6 @@ animation: fadeInMap 0.5s ease-in-out;
     font-size: 1.3rem;
 }
 
-/* Bouton Supprimer (dans popup carte) */
 .memory-delete-btn {
     margin-top: 12px;
     padding: 8px 16px;
@@ -351,7 +551,7 @@ animation: fadeInMap 0.5s ease-in-out;
 }
 
 /* =========================================
- *  4. MODAL & OVERLAYS
+ *  MODALS & POPUPS
  *  ========================================= */
 .modal-overlay {
     position: fixed;
@@ -387,8 +587,10 @@ animation: fadeInMap 0.5s ease-in-out;
 .modal-close {
     position: absolute;
     top: 16px; right: 16px;
-    background: none; border: none;
-    font-size: 1.2rem; color: var(--primary);
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--primary);
     cursor: pointer;
 }
 
@@ -417,18 +619,15 @@ animation: fadeInMap 0.5s ease-in-out;
     outline: none;
 }
 
-/* =========================================
- *  5. CORRECTION "VITRE INVISIBLE" DES POPUPS
- *  ========================================= */
+/* Correction "Vitre Invisible" */
 .think-popup,
 .friendship-popup {
     position: fixed;
-    top: 50%;
-    left: 50%;
+    top: 50%; left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
-    z-index: 2000;
+    z-index: 3000;
     opacity: 0;
-    pointer-events: none; /* ✅ CRUCIAL : Laisse passer les clics quand invisible */
+    pointer-events: none;
     transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
@@ -436,10 +635,267 @@ animation: fadeInMap 0.5s ease-in-out;
 .friendship-popup.active {
     opacity: 1;
     transform: translate(-50%, -50%) scale(1);
-    pointer-events: auto; /* ✅ Autorise les clics uniquement quand visible */
+    pointer-events: auto;
 }
 
 .think-popup-content,
 .friendship-popup-content {
     pointer-events: auto;
+    background: linear-gradient(135deg, #FFFFFF 0%, var(--pink-light) 100%);
+    border: 3px solid var(--pink);
+    border-radius: 24px;
+    padding: 40px 30px;
+    max-width: 340px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(230, 184, 184, 0.5);
+}
+
+.popup-heart {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    display: block;
+}
+
+.popup-title {
+    font-size: 1.3rem;
+    color: var(--pink-dark);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.popup-text {
+    font-size: 1rem;
+    color: var(--text);
+    margin-bottom: 24px;
+    line-height: 1.4;
+}
+
+.popup-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.popup-btn {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.popup-btn-primary {
+    background: linear-gradient(135deg, var(--pink) 0%, var(--pink-dark) 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(230, 184, 184, 0.4);
+}
+
+.popup-btn-primary:active {
+    transform: scale(0.96);
+}
+
+.popup-btn-secondary {
+    background: #E0D5C7;
+    color: var(--primary-dark);
+}
+
+.popup-btn-secondary:active {
+    transform: scale(0.96);
+}
+
+/* Formulaires génériques */
+form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+input {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #E0D5C7;
+    border-radius: 12px;
+    background: var(--card-bg);
+    font-size: 1rem;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+input:focus {
+    border-color: var(--primary-dark);
+}
+
+.btn-primary {
+    width: 100%;
+    padding: 16px;
+    background-color: var(--primary-dark);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+    background-color: #6D5A43;
+}
+
+.error-message {
+    color: var(--error);
+    font-size: 0.9rem;
+    min-height: 20px;
+}
+
+.btn-secondary {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid var(--primary);
+    color: var(--primary-dark);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+/* Le modal RDV utilise la classe .modal-overlay qui est déjà gérée par notre correction précédente */
+#rdv-modal .modal-content {
+background: white;
+padding: 25px;
+border-radius: 16px;
+width: 90%;
+max-width: 400px;
+position: relative;
+box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+#rdv-modal input {
+width: 100%;
+padding: 10px;
+margin-top: 5px;
+margin-bottom: 10px;
+border: 1px solid #ddd;
+border-radius: 8px;
+font-size: 1rem;
+box-sizing: border-box; /* Important pour que le padding ne dépasse pas */
+}
+
+/* =========================================
+ *  BADGES DE CATÉGORIE DE QUESTIONS
+ *  ========================================= */
+
+.category-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+}
+
+.category-badge-small {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Couleurs par thème */
+.badge-blue { background: #E3F2FD; color: #1565C0; }
+.badge-yellow { background: #FFF9C4; color: #F57F17; }
+.badge-green { background: #E8F5E9; color: #2E7D32; }
+.badge-orange { background: #FFF3E0; color: #E65100; }
+.badge-red { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+.badge-dark-red {
+    background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+    color: #B71C1C;
+    border: 1px solid #EF9A9A;
+    box-shadow: 0 2px 8px rgba(183, 28, 28, 0.2);
+}
+
+/* Ajustement du widget question pour accueillir le badge */
+.question-today-widget {
+    background: linear-gradient(135deg, #FFF5F7 0%, #FFFFFF 100%);
+    border: 2px solid var(--pink);
+    text-align: center; /* Centre le badge et le texte */
+}
+
+.question-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin: 10px 20px 20px 20px;
+    line-height: 1.4;
+    font-style: italic;
+}
+
+/* Badges de catégorie */
+.category-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 15px;
+}
+
+/* Couleurs par thème */
+.badge-blue { background: #E3F2FD; color: #1565C0; }
+.badge-yellow { background: #FFF9C4; color: #F57F17; }
+.badge-green { background: #E8F5E9; color: #2E7D32; }
+.badge-orange { background: #FFF3E0; color: #E65100; }
+.badge-red { background: #FFEBEE; color: #C62828; border: 1px solid #FFCDD2; }
+.badge-dark-red {
+    background: linear-gradient(135deg, #FFEBEE 0%, #FFCDD2 100%);
+    color: #B71C1C;
+    border: 1px solid #EF9A9A;
+    box-shadow: 0 2px 8px rgba(183, 28, 28, 0.2);
+}
+
+/* =========================================
+ *  FILTRES DE L'HISTORIQUE
+ *  ========================================= */
+
+.question-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 0 10px;
+}
+
+.filter-btn {
+    padding: 6px 14px;
+    border: 1px solid #E0D5C7;
+    background: white;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--primary-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-btn:hover {
+    background: var(--pink-light);
+    border-color: var(--pink);
+}
+
+/* État actif du filtre */
+.filter-btn.active {
+    background: var(--primary-dark);
+    color: white;
+    border-color: var(--primary-dark);
+    box-shadow: 0 2px 8px rgba(74, 64, 54, 0.2);
 }

@@ -13,12 +13,10 @@
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 1,
+      "total": 0,
       "streak": 0,
-      "lastSent": 1784105467207,
-      "history": [
-        "2026-07-15"
-      ]
+      "lastSent": null,
+      "history": []
     },
     "pendingNotifications": [],
     "memories": [
@@ -49,12 +47,10 @@
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 1,
+      "total": 0,
       "streak": 0,
-      "lastSent": 1784098837728,
-      "history": [
-        "2026-07-15"
-      ]
+      "lastSent": null,
+      "history": []
     },
     "pendingNotifications": [],
     "memories": [
