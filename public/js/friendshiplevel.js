@@ -35,7 +35,7 @@ export function initFriendshipLevel(userData) {
             if (!friendshipWidget) return;
 
             if (data.isMaxLevel) {
-                // ✅ MODE 4+ : On affiche le nombre de jours (sans écraser le HTML, on met juste à jour)
+                // ✅ MODE 4+ : On affiche le nombre de jours
                 friendshipWidget.classList.add('is-max-level');
 
                 let days = 0;
@@ -49,7 +49,7 @@ export function initFriendshipLevel(userData) {
                 if (levelUnitEl) levelUnitEl.textContent = 'jours 👑';
                 if (progressBarEl) progressBarEl.style.width = '100%';
 
-                // Style doré pour le statut (l'humeur reste visible en dessous grâce à la structure HTML)
+                // Style doré pour le statut
                 if (statusEl) {
                     statusEl.style.background = 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)';
                     statusEl.querySelector('.status-text').style.color = 'white';
@@ -60,20 +60,26 @@ export function initFriendshipLevel(userData) {
                 // ✅ MODE PROGRESSION (3.5 à 3.9)
                 friendshipWidget.classList.remove('is-max-level');
 
+                // 🎯 CALCUL DU NIVEAU D'AFFICHAGE : Plancher à 0.1 près, bloqué à 4.0 max
+                // Ex: 3.58 -> 3.5 | 3.62 -> 3.6 | 4.1 -> 4.0
+                const displayLevel = Math.min(4.0, Math.floor(data.currentLevel * 10) / 10);
+
                 if (levelLabelEl) levelLabelEl.textContent = 'Niveau d\'amitié';
-                if (levelNumberEl) levelNumberEl.textContent = data.currentLevel.toFixed(1);
+                if (levelNumberEl) levelNumberEl.textContent = displayLevel.toFixed(1);
                 if (levelUnitEl) levelUnitEl.textContent = '+';
 
-                // Calcul de la barre de progression (3.5 = 0%, 4.0 = 100%)
-                const progress = ((data.currentLevel - 3.5) / 0.5) * 100;
-                if (progressBarEl) progressBarEl.style.width = `${progress}%`;
+                // Calcul de la barre de progression (basé sur le niveau RÉEL pour une progression fluide, 3.5 = 0%, 4.0 = 100%)
+                const realLevel = Math.min(4.0, Math.max(3.5, data.currentLevel));
+                const progress = ((realLevel - 3.5) / 0.5) * 100;
+                if (progressBarEl) {
+                    progressBarEl.style.width = `${Math.max(0, Math.min(100, progress))}%`;
+                }
 
                 // On remet le style normal du statut (mood.js gérera l'affichage de l'humeur ici)
                 if (statusEl) {
                     statusEl.style.background = '';
                     statusEl.querySelector('.status-text').style.color = '';
                     statusEl.querySelector('.status-text').style.fontWeight = '';
-                    // Note : On ne touche pas au .textContent ici, car mood.js le gère !
                 }
             }
         } catch (err) {
@@ -89,26 +95,32 @@ export function initFriendshipLevel(userData) {
             const resLevel = await fetch('/api/friendship');
             const dataLevel = await resLevel.json();
 
-            // Mise à jour des infos
-            if (currentDisplayEl) currentDisplayEl.textContent = `${dataLevel.currentLevel.toFixed(1)}+`;
+            // 🎯 CALCUL DU NIVEAU D'AFFICHAGE POUR LE PROFIL (Plancher à 0.1, max 4.0)
+            const displayLevelProfile = Math.min(4.0, Math.floor(dataLevel.currentLevel * 10) / 10);
+
+            if (currentDisplayEl) {
+                currentDisplayEl.textContent = `${displayLevelProfile.toFixed(1)}+`;
+            }
 
             const authorName = dataLevel.updatedBy ? (dataLevel.updatedBy === 'marc' ? 'Marc' : 'Blandine') : '';
             if (currentAuthorEl) {
                 currentAuthorEl.textContent = authorName ? `Validé par ${authorName}` : '';
             }
 
-            // Mise à jour visuelle des boutons sélectionnés
+            // Mise à jour visuelle des boutons sélectionnés (on compare avec le niveau d'affichage)
             if (levelButtons) {
                 levelButtons.forEach(btn => {
                     btn.classList.remove('selected');
-                    if (parseFloat(btn.dataset.level) === dataLevel.currentLevel) {
+                    const btnLevel = parseFloat(btn.dataset.level);
+                    // Si le bouton correspond au niveau affiché, on le sélectionne
+                    if (btnLevel === displayLevelProfile) {
                         btn.classList.add('selected');
-                        selectedLevel = dataLevel.currentLevel;
+                        selectedLevel = btnLevel;
                     }
                 });
             }
 
-            // ✅ GESTION DE L'ÉTAT "EN ATTENTE" (Corrigée avec currentUser)
+            // ✅ GESTION DE L'ÉTAT "EN ATTENTE"
             if (pendingInfoEl && proposeBtn) {
                 if (dataLevel.amIWaiting && dataLevel.myPendingProposal) {
                     pendingInfoEl.style.display = 'block';
@@ -129,7 +141,7 @@ export function initFriendshipLevel(userData) {
     }
 
     // ==========================================
-    // 3. GESTION DES CLICS SUR LES BOUTONS DE NIVEAU (Une seule fois)
+    // 3. GESTION DES CLICS SUR LES BOUTONS DE NIVEAU
     // ==========================================
     if (levelButtons) {
         levelButtons.forEach(btn => {
@@ -177,7 +189,7 @@ export function initFriendshipLevel(userData) {
                 console.error(err);
                 alert('Erreur de connexion');
                 proposeBtn.disabled = false;
-                proposeBtn.textContent = '💌 Proposer ce';
+                proposeBtn.textContent = '💌 Proposer ce niveau';
             }
         });
     }

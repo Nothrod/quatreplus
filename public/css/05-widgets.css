@@ -899,3 +899,148 @@ box-sizing: border-box; /* Important pour que le padding ne dépasse pas */
     border-color: var(--primary-dark);
     box-shadow: 0 2px 8px rgba(74, 64, 54, 0.2);
 }
+
+.onafait-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px 0;
+}
+
+.onafait-item {
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    padding: 12px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.onafait-item.completed {
+    background: rgba(255, 215, 0, 0.15);
+    border-color: rgba(255, 215, 0, 0.4);
+}
+
+.onafait-checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    position: relative;
+}
+
+.onafait-checkbox {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.checkmark {
+    height: 24px;
+    width: 24px;
+    background-color: #e2e8f0;
+    border-radius: 6px;
+    flex-shrink: 0;
+    position: relative;
+    transition: background-color 0.2s;
+}
+
+.onafait-checkbox:checked ~ .checkmark {
+    background-color: var(--primary);
+}
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 8px;
+    top: 4px;
+    width: 6px;
+    height: 12px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.onafait-checkbox:checked ~ .checkmark:after {
+    display: block;
+}
+
+.onafait-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.onafait-title {
+    font-weight: 600;
+    color: var(--primary-dark);
+    font-size: 0.95rem;
+}
+
+.onafait-desc {
+    font-size: 0.8rem;
+    color: var(--primary);
+    margin-top: 4px;
+}
+
+.onafait-item.completed .onafait-title {
+    text-decoration: line-through;
+    opacity: 0.7;
+}
+
+.onafait-points {
+    background: var(--primary);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+    align-self: center;
+}
+
+/* Rend le widget cliquable avec un effet visuel */
+.clickable-widget {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.clickable-widget:hover {
+    transform: translateY(-3px);
+    border-color: var(--primary);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.clickable-widget:active {
+    transform: translateY(0);
+}
+
+.back-btn {
+    background: white;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: all 0.2s ease;
+}
+
+.back-btn:hover {
+    background: var(--primary);
+    color: white;
+    transform: translateX(-3px);
+}
+
+.back-btn span {
+    font-size: 1.2rem;
+    line-height: 1;
+}

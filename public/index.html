@@ -94,12 +94,17 @@
                             </button>
                         </div>
 
-                        <!-- WIDGET 4 : Météo (placeholder) -->
-                        <div class="widget-card widget-weather">
-                            <span class="weather-icon">⛅</span>
-                            <span class="weather-temp">—°</span>
-                            <span class="weather-desc">À configurer</span>
-                        </div>
+                        <!-- 4ème Widget : Point d'entrée vers "On a fait" -->
+<div class="widget dashboard-widget clickable-widget" id="widget-onafait-entry">
+    <div class="widget-header">
+        <h3>✅ On a fait</h3>
+    </div>
+    <div class="widget-content" style="text-align: center; padding: 15px;">
+        <div style="font-size: 2.5rem; margin-bottom: 10px;">🎯</div>
+        <!--<p style="font-weight: 600; color: var(--primary-dark); margin: 0;">Voir nos moments</p>-->
+        <p style="font-size: 0.8rem; color: #718096; margin-top: 5px;" id="onafait-dashboard-summary">Chargement...</p>
+    </div>
+</div>
 
                         <!-- WIDGET 5 : Musique du moment -->
                         <div class="widget-card widget-music" id="music-widget">
@@ -337,6 +342,26 @@
     </div>
 </div>
 
+<!-- =================================================
+     ONGLET : ON A FAIT
+     ================================================= -->
+<div id="tab-onafait" class="tab-content">
+    <!-- Bouton retour -->
+    <button class="back-btn" id="onafait-back-btn">
+        <span>←</span> Retour
+    </button>
+
+    <div class="widget onafait-widget">
+        <div class="widget-header">
+            <h3>✨ On a fait</h3>
+            <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">Coche ce que vous avez accompli ensemble pour faire monter votre niveau d'amitié !</p>
+        </div>
+        <div id="onafait-list" class="onafait-list">
+            <p style="text-align: center; color: #a0aec0; padding: 20px;">Chargement...</p>
+        </div>
+    </div>
+</div>
+
             </main>
 
             <!-- =====================================================
@@ -363,6 +388,7 @@
                     <span class="nav-icon">🤍</span>
                     <span class="nav-text">Moi</span>
                 </button>
+
 
             </nav>
 

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "dormir_ensemble",
+    "title": "Dormir ensemble",
+    "description": "Dormir ensemble habillé",
+    "points": 0.02
+  },
+  {
+    "id": "dormir_ensemble2",
+    "title": "Dormir ensemble ",
+    "description": "Dormir ensemble en sous vétement",
+    "points": 0.04
+  },
+  {
+    "id": "dormir_ensemble3",
+    "title": "Dormir ensemble 3",
+    "description": "Dormir ensemble nue",
+    "points": 0.06
+  },
+   {
+    "id": "smack",
+    "title": "Smack",
+    "description": "Echanger un smack",
+    "points": 0.01
+  },
+  {
+    "id": "baiser_cou",
+    "title": "Baiser dans le cou",
+    "description": "Embrasser ou mordiller doucement le cou de l'autre",
+    "points": 0.01
+  },
+  {
+    "id": "sembrasser",
+    "title": "S'embrasser",
+    "description": "Echanger un baiser",
+    "points": 0.02
+  },
+   {
+    "id": "baiser_passionne",
+    "title": "Baiser passionné",
+    "description": "S'embrasse de manière passionné",
+    "points": 0.04
+  },
+  {
+    "id": "calin_sousvetement",
+    "title": "Câlin en sous vêtement",
+    "description": "Avoir fait un câlin en sous vêtement",
+    "points": 0.01
+  },
+    {
+    "id": "calin_nue",
+    "title": "Câlin nue",
+    "description": "Avoir fait un câlin en étant nu",
+    "points": 0.01
+  },
+  {
+    "id": "preliminaires",
+    "title": "Préliminaires",
+    "description": "Pratiquer des préliminaires",
+    "points": 0.06
+  },
+  {
+    "id": "douche_ensemble",
+    "title": "Douche ou bain ensemble",
+    "description": "Partager un moment de toilette intime et complice",
+    "points": 0.05
+  },
+  {
+    "id": "massage",
+    "title": "Massage relaxant",
+    "description": "Avoir offert ou reçu un massage (dos, pieds, épaules...)",
+    "points": 0.04
+  },
+  {
+    "id": "caresse_peau",
+    "title": "Caresses sur la peau",
+    "description": "Se caresser la peau sous les vêtements",
+    "points": 0.04
+  },
+  {
+    "id": "reve_calin",
+    "title": "Réveil câlin",
+    "description": "Se réveiller à coté et commencer la journée par des calins",
+    "points": 0.02
+  }
+]

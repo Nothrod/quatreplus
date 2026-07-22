@@ -47,6 +47,7 @@ app.use('/api/friendship', require('./routes/friendship'));
 app.use('/api/map', require('./routes/map'));
 app.use('/api/rdv', require('./routes/rdv'));
 app.use('/api/question', require('./routes/question'));
+app.use('/api/onafait', require('./routes/onafait'));
 
 // Page d'accueil
 app.get('/', (req, res) => {

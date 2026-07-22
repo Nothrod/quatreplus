@@ -28,6 +28,9 @@ import { initFriendshipLevel } from './friendshiplevel.js';
 import { initMap } from './map.js';
 import { initRdv } from './rdv.js';
 import { initQuestion } from './question.js';
+import { initOnAFait } from './onafait.js';
+
+
 
 
 
@@ -49,4 +52,5 @@ initAuth((userData) => {
     initMap();
     initRdv();
     initQuestion(userData);
+    initOnAFait();
 });

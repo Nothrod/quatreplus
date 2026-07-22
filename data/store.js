@@ -27,7 +27,8 @@ const defaultData = {
             lastSent: null,
             history: []
         },
-        pendingNotifications: [] // ✅ AJOUTÉ ICI
+        pendingNotifications: [], // ✅ Virgule ajoutée ici
+        completedOnAFait: []      // ✅ Nouveau tableau pour suivre les actions
     },
     blandine: {
         username: 'blandine',
@@ -45,7 +46,8 @@ const defaultData = {
             lastSent: null,
             history: []
         },
-        pendingNotifications: [] // ✅ AJOUTÉ ICI
+        pendingNotifications: [], // ✅ Virgule ajoutée ici
+        completedOnAFait: []      // ✅ Nouveau tableau pour suivre les actions
     }
 };
 
