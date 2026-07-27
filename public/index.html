@@ -22,7 +22,7 @@
             <h1>Quatre+</h1>
             <p class="subtitle">Espace privé</p>
             <form id="login-form">
-                <input type="text" id="username" placeholder="Pseudo (marc ou blandine)" required autocomplete="username">
+                <input type="text" id="username" placeholder="Pseudo (Marc ou Blandine)" required autocomplete="username">
                 <input type="password" id="password" placeholder="Mot de passe" required autocomplete="current-password">
                 <button type="submit" class="btn-primary">Entrer</button>
                 <p id="login-error" class="error-message"></p>
@@ -286,11 +286,24 @@
                             <h3>📍 Nos Lieux</h3>
                             <p style="font-size: 0.85rem; color: var(--primary); margin-top: 5px;">Là où on a écrit notre histoire</p>
                         </div>
+<!-- Bouton pour ouvrir la liste récapitulative -->
+<button id="toggle-places-list-btn" class="btn-secondary map-list-btn">
+  📋 Voir la liste
+</button>
+
+<!-- Panneau coulissant (Bottom Sheet) pour la liste -->
+<div id="places-bottom-sheet" class="bottom-sheet">
+  <div class="bottom-sheet-header">
+    <h3>📍 Liste des souvenirs</h3>
+    <button id="close-bottom-sheet" class="modal-close">✕</button>
+  </div>
+  <div id="places-list-container" class="places-list-container">
+    <!-- La liste générée par JS s'affichera ici -->
+    <p class="empty-state">Chargement des souvenirs...</p>
+  </div>
+</div>
                         <div id="map-container"></div>
-                        <button id="add-memory-btn" class="add-memory-btn">
-                        <span>📍</span>
-                        <span>Ajouter un souvenir</span>
-                        </button>
+
                     </div>
                 </div>
 

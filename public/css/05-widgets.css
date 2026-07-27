@@ -794,6 +794,10 @@ box-sizing: border-box; /* Important pour que le padding ne dépasse pas */
  *  BADGES DE CATÉGORIE DE QUESTIONS
  *  ========================================= */
 
+.widget.question-history-widget, .widget.think-widget-detail {
+    margin-bottom: 100px !important;
+}
+
 .category-badge {
     display: inline-block;
     padding: 6px 14px;

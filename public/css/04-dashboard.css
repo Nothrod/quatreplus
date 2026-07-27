@@ -364,3 +364,111 @@
     flex-direction: column;
 }
 
+/* Bouton d'ouverture de la liste */
+.map-list-btn {
+    position: relative;
+    width: 50%;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
+    z-index: 800;
+    padding: 10px 20px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* Bottom Sheet (Panneau coulissant) */
+.bottom-sheet {
+    position: fixed;
+    bottom: -100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+    transition: bottom 0.3s ease-in-out;
+    z-index: 1000;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+}
+
+.bottom-sheet.active {
+    bottom: 0;
+}
+
+.bottom-sheet-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.bottom-sheet-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+/* Conteneur de la liste avec défilement */
+.places-list-container {
+    overflow-y: auto;
+    padding: 10px 20px 20px;
+    flex: 1;
+}
+
+/* Élément individuel de la liste */
+.place-list-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.place-list-item:hover {
+    background: #f9f9f9;
+    margin: 0 -20px;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.place-list-item .place-icon {
+    font-size: 1.5rem;
+    margin-right: 12px;
+}
+
+.place-list-item .place-info {
+    flex: 1;
+}
+
+.place-list-item .place-title {
+    font-weight: bold;
+    font-size: 1rem;
+    color: #333;
+}
+
+.place-list-item .place-desc {
+    font-size: 0.85rem;
+    color: #666;
+    margin: 4px 0;
+}
+
+.place-list-item .place-date {
+    font-size: 0.75rem;
+    color: #999;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.leaflet-bottom {
+    display: none;
+
+}
