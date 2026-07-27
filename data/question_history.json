@@ -1,50 +1,26 @@
 [
   {
-    "id": 1784205836272,
+    "id": 1784785725911,
     "category": "general",
-    "text": "Quel est le plat que tu pourrais manger tous les jours sans te lasser ?",
-    "date": "2026-07-16T12:43:56.272Z",
-    "marc_answer": null,
+    "text": "Quelle est la leçon de vie la plus importante que tu aies apprise ?",
+    "date": "2026-07-23T05:48:45.911Z",
+    "marc_answer": "Le mariage c'est vraiment la merde.",
     "blandine_answer": null
   },
   {
-    "id": 1784271678626,
+    "id": 1785031933252,
+    "category": "je_nai_jamais",
+    "text": "Je n'ai jamais menti sur mon âge.",
+    "date": "2026-07-26T02:12:13.252Z",
+    "marc_answer": "Non jamais",
+    "blandine_answer": "Oh si sûrement 😅"
+  },
+  {
+    "id": 1785128611641,
     "category": "tres_hot",
-    "text": "Quel est le scénario exact que tu veux qu'on réalise ce week-end ?",
-    "date": "2026-07-17T07:01:18.626Z",
-    "marc_answer": null,
-    "blandine_answer": null
-  },
-  {
-    "id": 1784477046752,
-    "category": "hot",
-    "text": "Décris avec des mots ce que tu aimerais qu'on fasse ce soir.",
-    "date": "2026-07-19T16:04:06.752Z",
-    "marc_answer": null,
-    "blandine_answer": null
-  },
-  {
-    "id": 1784544040841,
-    "category": "tres_hot",
-    "text": "Dis-moi un détail très précis que tu adores quand on est intimes.",
-    "date": "2026-07-20T10:40:40.841Z",
-    "marc_answer": null,
-    "blandine_answer": null
-  },
-  {
-    "id": 1784616564069,
-    "category": "coquin",
-    "text": "Quel est l'endroit le plus insolite où tu aimerais qu'on soit ensemble ?",
-    "date": "2026-07-21T06:49:24.069Z",
-    "marc_answer": null,
-    "blandine_answer": null
-  },
-  {
-    "id": 1784702755082,
-    "category": "coquin",
-    "text": "Quel est ton fantasme inavoué ?",
-    "date": "2026-07-22T06:45:55.082Z",
-    "marc_answer": null,
-    "blandine_answer": null
+    "text": "Quel est ton fantasme le plus intense que tu n'as jamais osé me dire ?",
+    "date": "2026-07-27T05:03:31.641Z",
+    "marc_answer": "Pour l'instant aucun, mais ca viendra et je t'en parlerai",
+    "blandine_answer": "Je ne sais pas"
   }
 ]

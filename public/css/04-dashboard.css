@@ -194,6 +194,9 @@
 /* =========================================
  *  WIDGET 3 : "JE PENSE À TOI" (GLOSSY)
  *  ========================================= */
+
+
+
 .widget-think-compact {
     padding: 0;
     overflow: hidden;
@@ -360,3 +363,4 @@
     display: flex; /* Ou 'block' si votre layout le demande */
     flex-direction: column;
 }
+

@@ -1,4 +1,3 @@
-// routes/question.js
 const express = require('express');
 const router = express.Router();
 const fs = require('fs');
@@ -12,7 +11,6 @@ const categories = ['je_nai_jamais', 'drole', 'connaissance', 'general', 'coquin
 const readJSON = (filePath) => JSON.parse(fs.readFileSync(filePath, 'utf8'));
 const writeJSON = (filePath, data) => fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
-// Fonction pour vérifier si une date est "aujourd'hui"
 const isToday = (dateString) => {
     const date = new Date(dateString);
     const today = new Date();
@@ -21,7 +19,6 @@ const isToday = (dateString) => {
     date.getFullYear() === today.getFullYear();
 };
 
-// GET : Obtenir la question actuelle et l'historique
 router.get('/', (req, res) => {
     try {
         let history = fs.existsSync(historyPath) ? readJSON(historyPath) : [];
@@ -32,25 +29,25 @@ router.get('/', (req, res) => {
         if (history.length > 0) {
             const last = history[history.length - 1];
 
+            // ✨ CORRECTION : On vérifie les réponses en ignorant la casse (minuscule ou majuscule)
+            const marcAns = last.marc_answer || last.Marc_answer;
+            const blandineAns = last.blandine_answer || last.Blandine_answer;
+
             if (isToday(last.date)) {
-                // Il y a une question aujourd'hui
-                if (last.marc_answer && last.blandine_answer) {
-                    // ✨ Les deux ont répondu : on masque la question, on attend demain
+                if (marcAns && blandineAns) {
                     comeBackTomorrow = true;
-                    currentQuestion = null;
+                    // On normalise les clés en minuscules pour que le frontend ne soit pas perdu
+                    currentQuestion = { ...last, marc_answer: marcAns, blandine_answer: blandineAns };
                     completedHistory = history.slice(0, -1);
                 } else {
-                    // Question en cours (pas encore les 2 réponses)
-                    currentQuestion = last;
+                    currentQuestion = { ...last, marc_answer: marcAns, blandine_answer: blandineAns };
                     completedHistory = history.slice(0, -1);
                 }
             } else {
-                // Pas de question aujourd'hui, on va en tirer une
                 completedHistory = history;
             }
         }
 
-        // Tirage d'une nouvelle question si besoin
         if (!currentQuestion && !comeBackTomorrow) {
             const shuffledCats = [...categories].sort(() => 0.5 - Math.random());
             let pickedCategory = null;
@@ -96,11 +93,11 @@ router.get('/', (req, res) => {
     }
 });
 
-// POST : Soumettre une réponse
 router.post('/answer', (req, res) => {
     try {
         const { questionId, answer } = req.body;
-        const currentUser = req.session.user.username;
+        // ✨ CORRECTION : On force le nom d'utilisateur en minuscules pour la clé
+        const currentUser = req.session.user.username.toLowerCase();
         const answerKey = `${currentUser}_answer`;
 
         let history = readJSON(historyPath);
@@ -108,6 +105,11 @@ router.post('/answer', (req, res) => {
 
         if (questionIndex !== -1) {
             history[questionIndex][answerKey] = answer;
+
+            // Nettoyage des anciennes clés en majuscules pour éviter les doublons
+            if (currentUser === 'marc') delete history[questionIndex].Marc_answer;
+            if (currentUser === 'blandine') delete history[questionIndex].Blandine_answer;
+
             writeJSON(historyPath, history);
             res.json({ success: true, history });
         } else {

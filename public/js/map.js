@@ -2,7 +2,6 @@
 export function initMap() {
     console.log('🗺️ Module Carte chargé');
 
-    // 1️⃣ SÉLECTION SÉCURISÉE DES ÉLÉMENTS DU DOM
     const mapContainer = document.getElementById('map-container');
     const addBtn = document.getElementById('add-memory-btn');
     const modal = document.getElementById('memory-modal');
@@ -10,9 +9,14 @@ export function initMap() {
     const form = document.getElementById('memory-form');
     const dateInput = document.getElementById('memory-date');
 
-    // Si le conteneur de la carte n'existe pas, on arrête tout proprement sans faire planter l'app
+    // Éléments du Bottom Sheet
+    const toggleListBtn = document.getElementById('toggle-places-list-btn');
+    const bottomSheet = document.getElementById('places-bottom-sheet');
+    const closeSheetBtn = document.getElementById('close-bottom-sheet');
+    const listContainer = document.getElementById('places-list-container');
+
     if (!mapContainer) {
-        console.warn('⚠️ #map-container introuvable. Initialisation de la carte annulée pour le moment.');
+        console.warn('⚠️ #map-container introuvable.');
         return;
     }
 
@@ -28,16 +32,13 @@ export function initMap() {
     const DEFAULT_LNG = 6.5553;
     const DEFAULT_ZOOM = 13;
 
-    // 2️⃣ Fonction pour initialiser ou "réveiller" la carte
     function ensureMapIsReady() {
         if (!isInitialized) {
             console.log('📍 Initialisation de la carte Leaflet');
             isInitialized = true;
 
-            map = L.map('map-container', {
-                zoomControl: false,
-                tap: true
-            }).setView([DEFAULT_LAT, DEFAULT_LNG], DEFAULT_ZOOM);
+            map = L.map('map-container', { zoomControl: false, tap: true })
+            .setView([DEFAULT_LAT, DEFAULT_LNG], DEFAULT_ZOOM);
 
             L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap',
@@ -54,17 +55,11 @@ export function initMap() {
                 selectedLng = e.latlng.lng;
 
                 if (tempMarker) map.removeLayer(tempMarker);
-
-                tempMarker = L.marker([selectedLat, selectedLng], {
-                    icon: createCustomIcon()
-                }).addTo(map);
-
+                tempMarker = L.marker([selectedLat, selectedLng], { icon: createCustomIcon() }).addTo(map);
                 openModal();
             });
         } else {
-            setTimeout(() => {
-                if (map) map.invalidateSize();
-            }, 100);
+            setTimeout(() => { if (map) map.invalidateSize(); }, 100);
         }
     }
 
@@ -81,9 +76,7 @@ export function initMap() {
     function addMarkerToMap(memory) {
         if (!map) return;
 
-        const marker = L.marker([memory.lat, memory.lng], {
-            icon: createCustomIcon()
-        }).addTo(map);
+        const marker = L.marker([memory.lat, memory.lng], { icon: createCustomIcon() }).addTo(map);
 
         const popupContent = `
         <div class="memory-popup-content">
@@ -95,13 +88,7 @@ export function initMap() {
         `;
 
         marker.memoryId = memory.id;
-        marker.bindPopup(popupContent, {
-            closeButton: true,
-            closeOnClick: true,
-            autoClose: true,
-            maxWidth: 250
-        });
-
+        marker.bindPopup(popupContent, { closeButton: true, closeOnClick: true, autoClose: true, maxWidth: 250 });
         markers.push(marker);
 
         marker.on('popupopen', function() {
@@ -118,18 +105,78 @@ export function initMap() {
         });
     }
 
-    async function deleteMemory(memoryId, marker) {
-        if (!confirm('Supprimer ce souvenir ? Cette action est définitive.')) return;
+    // ✨ NOUVEAU : Générer la liste dans le bottom sheet
+    function renderPlacesList() {
+        if (!listContainer) return;
 
+        if (memoriesData.length === 0) {
+            listContainer.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 20px;">Aucun lieu pour le moment.</p>';
+            return;
+        }
+
+        // Trier par date décroissante (plus récent en premier)
+        const sortedMemories = [...memoriesData].sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        listContainer.innerHTML = sortedMemories.map(memory => {
+            const dateStr = new Date(memory.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+            return `
+            <div class="place-list-item" data-id="${memory.id}" data-lat="${memory.lat}" data-lng="${memory.lng}">
+            <div class="place-item-icon">📍</div>
+            <div class="place-item-content">
+            <div class="place-item-title">${memory.title}</div>
+            <div class="place-item-desc">${memory.desc}</div>
+            <div class="place-item-date">📅 ${dateStr}</div>
+            </div>
+            <div class="place-item-arrow">›</div>
+            </div>
+            `;
+        }).join('');
+
+        // Ajouter les écouteurs de clic sur chaque élément de la liste
+        document.querySelectorAll('.place-list-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const lat = parseFloat(item.dataset.lat);
+                const lng = parseFloat(item.dataset.lng);
+                const id = parseInt(item.dataset.id);
+
+                closeBottomSheet(); // Fermer le panneau
+
+                if (map) {
+                    // Animation fluide vers le lieu
+                    map.flyTo([lat, lng], 16, { duration: 1.2 });
+
+                    // Ouvrir le popup une fois l'animation terminée
+                    setTimeout(() => {
+                        const targetMarker = markers.find(m => m.memoryId === id);
+                        if (targetMarker) targetMarker.openPopup();
+                    }, 1200);
+                }
+            });
+        });
+    }
+
+    function openBottomSheet() {
+        if (bottomSheet) {
+            renderPlacesList();
+            bottomSheet.classList.add('active');
+        }
+    }
+
+    function closeBottomSheet() {
+        if (bottomSheet) bottomSheet.classList.remove('active');
+    }
+
+    async function deleteMemory(memoryId, marker) {
+        if (!confirm('Supprimer ce souvenir ?')) return;
         try {
             const res = await fetch(`/api/map/memories/${memoryId}`, { method: 'DELETE' });
             const data = await res.json();
-
             if (data.success) {
                 map.closePopup();
                 map.removeLayer(marker);
                 markers = markers.filter(m => m.memoryId !== memoryId);
                 memoriesData = memoriesData.filter(m => m.id !== memoryId);
+                renderPlacesList(); // Mettre à jour la liste après suppression
             }
         } catch (err) {
             console.error('Erreur suppression:', err);
@@ -148,21 +195,15 @@ export function initMap() {
                 const group = new L.featureGroup(markers);
                 map.fitBounds(group.getBounds().pad(0.3));
             }
+            renderPlacesList(); // Pré-remplir la liste
         } catch (err) {
             console.error('Erreur chargement carte:', err);
         }
     }
 
-    // 3️⃣ FONCTIONS ET ÉCOUTEURS D'ÉVÉNEMENTS SÉCURISÉS
-
     function openModal() {
-        // ✅ CORRECTION : On vérifie que le champ date existe avant de lui assigner une valeur
-        if (dateInput) {
-            dateInput.valueAsDate = new Date();
-        }
-        if (modal) {
-            modal.classList.add('active');
-        }
+        if (dateInput) dateInput.valueAsDate = new Date();
+        if (modal) modal.classList.add('active');
     }
 
     function resetAddButton() {
@@ -172,7 +213,7 @@ export function initMap() {
         }
     }
 
-    // ✅ CORRECTION : On n'attache l'événement que si le bouton existe
+    // Écouteurs d'événements
     if (addBtn) {
         addBtn.addEventListener('click', () => {
             ensureMapIsReady();
@@ -180,17 +221,12 @@ export function initMap() {
         });
     }
 
-    // ✅ CORRECTION : On vérifie que closeBtn et form existent
     if (closeBtn && modal && form) {
         closeBtn.addEventListener('click', () => {
             modal.classList.remove('active');
             form.reset();
-            if (tempMarker && map) {
-                map.removeLayer(tempMarker);
-                tempMarker = null;
-            }
-            selectedLat = null;
-            selectedLng = null;
+            if (tempMarker && map) { map.removeLayer(tempMarker); tempMarker = null; }
+            selectedLat = null; selectedLng = null;
             resetAddButton();
         });
     }
@@ -200,12 +236,8 @@ export function initMap() {
             if (e.target === modal) {
                 modal.classList.remove('active');
                 if (form) form.reset();
-                if (tempMarker && map) {
-                    map.removeLayer(tempMarker);
-                    tempMarker = null;
-                }
-                selectedLat = null;
-                selectedLng = null;
+                if (tempMarker && map) { map.removeLayer(tempMarker); tempMarker = null; }
+                selectedLat = null; selectedLng = null;
                 resetAddButton();
             }
         });
@@ -214,7 +246,6 @@ export function initMap() {
     if (form) {
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             if (!selectedLat || !selectedLng) {
                 alert("Veuillez d'abord cliquer sur la carte pour placer le lieu.");
                 return;
@@ -240,16 +271,12 @@ export function initMap() {
                 if (data.success) {
                     memoriesData.push(data.memory);
                     addMarkerToMap(data.memory);
+                    renderPlacesList(); // Mettre à jour la liste
 
                     if (modal) modal.classList.remove('active');
                               if (form) form.reset();
-
-                              if (tempMarker && map) {
-                                  map.removeLayer(tempMarker);
-                                  tempMarker = null;
-                              }
-                              selectedLat = null;
-                    selectedLng = null;
+                              if (tempMarker && map) { map.removeLayer(tempMarker); tempMarker = null; }
+                              selectedLat = null; selectedLng = null;
 
                     if (map) {
                         map.setView([data.memory.lat, data.memory.lng], 15);
@@ -268,7 +295,18 @@ export function initMap() {
         });
     }
 
-    // Écouteur sur l'onglet de navigation
+    // ✨ Écouteurs pour le Bottom Sheet
+    if (toggleListBtn) toggleListBtn.addEventListener('click', openBottomSheet);
+    if (closeSheetBtn) closeSheetBtn.addEventListener('click', closeBottomSheet);
+
+    // Fermer le sheet si on clique en dehors (sur la carte)
+    if (mapContainer) {
+        mapContainer.addEventListener('click', () => {
+            // Petit délai pour éviter que le clic d'ouverture ne le referme immédiatement
+            setTimeout(closeBottomSheet, 100);
+        });
+    }
+
     const mapTabBtn = document.querySelector('.nav-btn[data-tab="tab-map"]');
     if (mapTabBtn) {
         mapTabBtn.addEventListener('click', () => {
@@ -276,6 +314,5 @@ export function initMap() {
         });
     }
 
-    // Lancer le chargement des données en arrière-plan
     loadMemories();
 }

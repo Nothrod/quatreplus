@@ -5,31 +5,72 @@
     "profile": {
       "name": "Marc",
       "avatar": "/images/marc.jpg",
-      "mood": {
-        "emoji": "😊",
-        "timestamp": 1784067327592
-      },
+      "mood": "🥰",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 0,
-      "streak": 0,
-      "lastSent": null,
+      "total": 4,
+      "streak": 2,
+      "lastSent": 1785135962223,
       "history": []
     },
     "pendingNotifications": [],
     "completedOnAFait": [],
     "memories": [
       {
-        "id": 1784144999304,
-        "title": "Première échange",
-        "desc": "Devant la salle des fêtes à Halloween",
-        "date": "2022-10-23",
-        "lat": 47.4413100753842,
-        "lng": 6.638284921646119,
+        "id": 1784829426416,
+        "title": "Premiere discussion",
+        "desc": "Chez Marie-Claude pour les municipales",
+        "date": "2025-11-24",
+        "lat": 47.410240237755175,
+        "lng": 6.662687659263611,
         "addedBy": {
-          "username": "blandine"
+          "username": "marc"
+        }
+      },
+      {
+        "id": 1784829483782,
+        "title": "Premier échange",
+        "desc": "Devant la salle des fêtes à Halloween",
+        "date": "2022-10-31",
+        "lat": 47.44140286958281,
+        "lng": 6.640505790710449,
+        "addedBy": {
+          "username": "marc"
+        }
+      },
+      {
+        "id": 1784829567316,
+        "title": "Première nuit ensemble",
+        "desc": "Juste dormir main dans la main<3",
+        "date": "2026-07-18",
+        "lat": 47.440105540020944,
+        "lng": 6.632016599178315,
+        "addedBy": {
+          "username": "marc"
+        }
+      },
+      {
+        "id": 1785064794056,
+        "title": "Festival de la paille",
+        "desc": "25e édition en tenue de BG mama comme j'ai maté 🫣",
+        "date": "2026-07-25",
+        "lat": 46.76778066834142,
+        "lng": 6.361581364224428,
+        "addedBy": {
+          "username": "Marc"
+        }
+      },
+      {
+        "id": 1785064857696,
+        "title": "1er camping",
+        "desc": "Petit câlin de main pour s'endormir.",
+        "date": "2026-07-25",
+        "lat": 46.81078980801277,
+        "lng": 6.30184618053995,
+        "addedBy": {
+          "username": "Marc"
         }
       }
     ]
@@ -40,31 +81,72 @@
     "profile": {
       "name": "Blandine",
       "avatar": "/images/blandine.jpg",
-      "mood": {
-        "emoji": "🥵",
-        "timestamp": 1784067517053
-      },
+      "mood": "😴",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 0,
-      "streak": 0,
-      "lastSent": null,
+      "total": 4,
+      "streak": 1,
+      "lastSent": 1785136030817,
       "history": []
     },
     "pendingNotifications": [],
     "completedOnAFait": [],
     "memories": [
       {
-        "id": 1784144999304,
-        "title": "Première échange",
-        "desc": "Devant la salle des fêtes à Halloween",
-        "date": "2022-10-23",
-        "lat": 47.4413100753842,
-        "lng": 6.638284921646119,
+        "id": 1784829426416,
+        "title": "Premiere discussion",
+        "desc": "Chez Marie-Claude pour les municipales",
+        "date": "2025-11-24",
+        "lat": 47.410240237755175,
+        "lng": 6.662687659263611,
         "addedBy": {
-          "username": "blandine"
+          "username": "marc"
+        }
+      },
+      {
+        "id": 1784829483782,
+        "title": "Premier échange",
+        "desc": "Devant la salle des fêtes à Halloween",
+        "date": "2022-10-31",
+        "lat": 47.44140286958281,
+        "lng": 6.640505790710449,
+        "addedBy": {
+          "username": "marc"
+        }
+      },
+      {
+        "id": 1784829567316,
+        "title": "Première nuit ensemble",
+        "desc": "Juste dormir main dans la main<3",
+        "date": "2026-07-18",
+        "lat": 47.440105540020944,
+        "lng": 6.632016599178315,
+        "addedBy": {
+          "username": "marc"
+        }
+      },
+      {
+        "id": 1785064794056,
+        "title": "Festival de la paille",
+        "desc": "25e édition en tenue de BG mama comme j'ai maté 🫣",
+        "date": "2026-07-25",
+        "lat": 46.76778066834142,
+        "lng": 6.361581364224428,
+        "addedBy": {
+          "username": "Marc"
+        }
+      },
+      {
+        "id": 1785064857696,
+        "title": "1er camping",
+        "desc": "Petit câlin de main pour s'endormir.",
+        "date": "2026-07-25",
+        "lat": 46.81078980801277,
+        "lng": 6.30184618053995,
+        "addedBy": {
+          "username": "Marc"
         }
       }
     ]
