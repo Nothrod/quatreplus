@@ -22,5 +22,61 @@
     "date": "2026-07-27T05:03:31.641Z",
     "marc_answer": "Pour l'instant aucun, mais ca viendra et je t'en parlerai",
     "blandine_answer": "Je ne sais pas"
+  },
+  {
+    "id": 1785199204758,
+    "category": "je_nai_jamais",
+    "text": "Je n'ai jamais envoyé un message à la mauvaise personne.",
+    "date": "2026-07-28T00:40:04.758Z",
+    "marc_answer": "Si tout le temps",
+    "blandine_answer": "Si, plusieurs fois"
+  },
+  {
+    "id": 1785279630916,
+    "category": "hot",
+    "text": "Où est l'endroit le plus insolite où tu aies fait l'amour ?",
+    "date": "2026-07-28T23:00:30.916Z",
+    "marc_answer": "L'amour aucun, mais des préliminaires dans un couloir du lycée",
+    "blandine_answer": "Dans la piscine de mes grds parents, on s'est fait à moitié caler par ma tante 😅"
+  },
+  {
+    "id": 1785391337614,
+    "category": "general",
+    "text": "Quelle est ta journée idéale ?",
+    "date": "2026-07-30T06:02:17.614Z",
+    "marc_answer": "N'importe du moment que c'est avec toi",
+    "blandine_answer": "Rando dans un paysage de fifou genre Suisse, avec pique nique avec vue."
+  },
+  {
+    "id": 1785448832613,
+    "category": "drole",
+    "text": "Quel personnage de dessin animé serait le meilleur colocataire ?",
+    "date": "2026-07-30T22:00:32.613Z",
+    "marc_answer": "Hey Arnold",
+    "blandine_answer": "Un Bisounours ? 😅✨🌈"
+  },
+  {
+    "id": 1785586944223,
+    "category": "drole",
+    "text": "Si tu étais un animal, lequel serais-tu et pourquoi ?",
+    "date": "2026-08-01T12:22:24.223Z",
+    "marc_answer": "Un paresseux pour dormir tout le temps",
+    "blandine_answer": "Un lapin, parceque c'est trop mignon. Ou un oiseau, pr aller partout sans contraintes, ou un singe pour utiliser mes mains 😂 Bref j'en sais rien."
+  },
+  {
+    "id": 1785623426636,
+    "category": "general",
+    "text": "Quel est ton plus grand talent ?",
+    "date": "2026-08-01T22:30:26.636Z",
+    "marc_answer": "Faire rire les gens",
+    "blandine_answer": "Mon côté créatif"
+  },
+  {
+    "id": 1785709401748,
+    "category": "general",
+    "text": "Quel est ton parfum de glace préféré ?",
+    "date": "2026-08-02T22:23:21.748Z",
+    "marc_answer": "Chocolat",
+    "blandine_answer": "Euh...tous ? Pt mangue ou melon."
   }
 ]

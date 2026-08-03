@@ -16,6 +16,11 @@ try {
     console.error('❌ Erreur critique chargement store:', err);
 }
 
+// 🌍 Helper : obtient la date au format YYYY-MM-DD dans le fuseau horaire de Paris
+const getParisDateString = (timestamp) => {
+    return new Date(timestamp).toLocaleDateString('en-CA', { timeZone: 'Europe/Paris' });
+};
+
 const checkAuth = (req, res, next) => {
     if (!req.session.user || !req.session.user.username) {
         return res.status(401).json({ error: 'Non connecté' });
@@ -37,8 +42,10 @@ router.get('/', checkAuth, (req, res) => {
         if (!currentUserData.thinkOfYou) currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
         if (!otherUserData.thinkOfYou) otherUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
 
-        const lastSentTime = currentUserData.thinkOfYou.lastSent ? new Date(currentUserData.thinkOfYou.lastSent).getTime() : 0;
-        const canSend = (Date.now() - lastSentTime) > (24 * 60 * 60 * 1000);
+        // 🔄 Vérification basée sur minuit heure de Paris (et non plus 24h glissantes)
+        const lastSentDate = currentUserData.thinkOfYou.lastSent ? getParisDateString(currentUserData.thinkOfYou.lastSent) : null;
+        const todayParis = getParisDateString(Date.now());
+        const canSend = lastSentDate !== todayParis;
 
         res.json({
             myStats: { total: currentUserData.thinkOfYou.total, streak: currentUserData.thinkOfYou.streak },
@@ -66,7 +73,7 @@ router.get('/check', checkAuth, (req, res) => {
         // On vide le tableau
         currentUserData.pendingNotifications = [];
 
-        // ✅ Sauvegarde protégée : si elle échoue, on log l'erreur mais on ne crash pas le serveur
+        // ✅ Sauvegarde protégée
         try {
             saveStore(users);
             console.log(`✅ [CHECK] Notifications vidées et sauvegardées pour ${req.currentUser}`);
@@ -95,18 +102,20 @@ router.post('/send', checkAuth, (req, res) => {
         if (!currentUserData.thinkOfYou) currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
         if (!otherUserData.pendingNotifications) otherUserData.pendingNotifications = [];
 
-        const lastSentTime = currentUserData.thinkOfYou.lastSent ? new Date(currentUserData.thinkOfYou.lastSent).getTime() : 0;
-        const canSend = (Date.now() - lastSentTime) > (24 * 60 * 60 * 1000);
+        // 🔄 Vérification basée sur minuit heure de Paris
+        const lastSentDate = currentUserData.thinkOfYou.lastSent ? getParisDateString(currentUserData.thinkOfYou.lastSent) : null;
+        const todayParis = getParisDateString(Date.now());
+        const canSend = lastSentDate !== todayParis;
 
         if (!canSend) return res.status(400).json({ error: 'Déjà envoyé aujourd\'hui' });
 
         currentUserData.thinkOfYou.total += 1;
 
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const lastSentDateStr = currentUserData.thinkOfYou.lastSent ? new Date(currentUserData.thinkOfYou.lastSent).toDateString() : null;
+        // 🔥 Calcul de la streak basé sur le calendrier de Paris
+        // On soustrait 24h pour obtenir la date d'hier, puis on la formate en heure de Paris
+        const yesterdayParis = getParisDateString(Date.now() - (24 * 60 * 60 * 1000));
 
-        if (lastSentDateStr === yesterday.toDateString()) {
+        if (lastSentDate === yesterdayParis) {
             currentUserData.thinkOfYou.streak += 1;
         } else {
             currentUserData.thinkOfYou.streak = 1;

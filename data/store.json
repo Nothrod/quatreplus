@@ -5,17 +5,26 @@
     "profile": {
       "name": "Marc",
       "avatar": "/images/marc.jpg",
-      "mood": "🥰",
+      "mood": "🤗",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 4,
-      "streak": 2,
-      "lastSent": 1785135962223,
+      "total": 11,
+      "streak": 9,
+      "lastSent": 1785709405591,
       "history": []
     },
-    "pendingNotifications": [],
+    "pendingNotifications": [
+      {
+        "type": "thinkofyou",
+        "from": "blandine",
+        "fromName": "Blandine",
+        "streak": 8,
+        "timestamp": 1785739771526,
+        "read": false
+      }
+    ],
     "completedOnAFait": [],
     "memories": [
       {
@@ -81,14 +90,14 @@
     "profile": {
       "name": "Blandine",
       "avatar": "/images/blandine.jpg",
-      "mood": "😴",
+      "mood": "😤",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 4,
-      "streak": 1,
-      "lastSent": 1785136030817,
+      "total": 11,
+      "streak": 8,
+      "lastSent": 1785739771526,
       "history": []
     },
     "pendingNotifications": [],
