@@ -28,9 +28,9 @@ export function initDashboard(userData) {
                 if (photoFallback) photoFallback.style.display = 'flex';
             }
 
-            // ✅ SÉCURITÉ : On ne touche à textContent que si l'élément existe
+            // ✅ SÉCURITÉ : On ne touche à textContent que si l'élément existe ET que author est une chaîne
             if (photoAuthorText) {
-                if (data.author) {
+                if (data.author && typeof data.author === 'string') {
                     const authorName = data.author.toLowerCase() === 'marc' ? 'Marc' : 'Blandine';
                     photoAuthorText.textContent = `📸 ${authorName}`;
                 } else {

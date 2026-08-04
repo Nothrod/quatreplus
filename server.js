@@ -5,6 +5,7 @@ const session = require('express-session');
 const SimpleJSONStore = require('./store/session-store'); // <-- NOUVEAU
 const path = require('path');
 const fs = require('fs');
+const placesRoutes = require('./routes/places');
 
 const app = express();
 const PORT = process.env.PORT || 3006;
@@ -48,6 +49,7 @@ app.use('/api/map', require('./routes/map'));
 app.use('/api/rdv', require('./routes/rdv'));
 app.use('/api/question', require('./routes/question'));
 app.use('/api/onafait', require('./routes/onafait'));
+app.use('/api/places', placesRoutes);
 
 // Page d'accueil
 app.get('/', (req, res) => {

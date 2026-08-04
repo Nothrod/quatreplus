@@ -27,8 +27,9 @@ const defaultData = {
             lastSent: null,
             history: []
         },
-        pendingNotifications: [], // ✅ Virgule ajoutée ici
-        completedOnAFait: []      // ✅ Nouveau tableau pour suivre les actions
+        pendingNotifications: [],
+        completedOnAFait: [],
+        placesToVisit: [] // ✅ AJOUTÉ : Tableau pour les lieux à visiter
     },
     blandine: {
         username: 'blandine',
@@ -46,8 +47,9 @@ const defaultData = {
             lastSent: null,
             history: []
         },
-        pendingNotifications: [], // ✅ Virgule ajoutée ici
-        completedOnAFait: []      // ✅ Nouveau tableau pour suivre les actions
+        pendingNotifications: [],
+        completedOnAFait: [],
+        placesToVisit: [] // ✅ AJOUTÉ : Tableau pour les lieux à visiter
     }
 };
 
@@ -75,20 +77,6 @@ function loadStore() {
 function saveStore(data) {
     fs.writeFileSync(storePath, JSON.stringify(data, null, 2));
 }
-
-// Dans defaultData.marc et defaultData.blandine, ajoute :
-memories: [
-    // Exemple de donnée de test (Paris)
-    {
-        id: 1,
-        title: "Notre premier café",
-        desc: "On a parlé pendant 4 heures ☕",
-        date: "2023-10-27",
-        lat: 48.8566,
-        lng: 2.3522,
-        addedBy: "marc"
-    }
-]
 
 const users = loadStore();
 
