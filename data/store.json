@@ -5,14 +5,14 @@
     "profile": {
       "name": "Marc",
       "avatar": "/images/marc.jpg",
-      "mood": "🥰",
+      "mood": "🤪",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 12,
-      "streak": 10,
-      "lastSent": 1785794774564,
+      "total": 24,
+      "streak": 22,
+      "lastSent": 1786862908499,
       "history": []
     },
     "pendingNotifications": [],
@@ -1578,14 +1578,14 @@
     "profile": {
       "name": "Blandine",
       "avatar": "/images/blandine.jpg",
-      "mood": "😢",
+      "mood": "😟",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 12,
-      "streak": 9,
-      "lastSent": 1785825789456,
+      "total": 24,
+      "streak": 21,
+      "lastSent": 1786833713996,
       "history": []
     },
     "pendingNotifications": [],

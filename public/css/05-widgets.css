@@ -72,7 +72,34 @@ padding-bottom: 100px;
     min-height: 1.4em;
 }
 
+/* Ajustement pour les boutons d'humeur avec texte */
+.mood-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 6px;
+    min-width: 60px;
+}
 
+.mood-btn .emoji {
+    font-size: 1.8rem;
+    line-height: 1;
+}
+
+.mood-btn .label {
+    font-size: 0.65rem;
+    margin-top: 4px;
+    color: var(--primary-dark, #4a5568);
+    font-weight: 500;
+    text-align: center;
+}
+
+/* Conserver le style actif existant */
+.mood-btn.active {
+    background-color: var(--pink, #ffb6c1); /* Ajustez selon votre variable de couleur active */
+    border-color: var(--pink-dark, #ff69b4);
+}
 
 /* ==========================================
  *  WIDGET 5 : MUSIQUE DU MOMENT
