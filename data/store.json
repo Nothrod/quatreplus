@@ -5,14 +5,14 @@
     "profile": {
       "name": "Marc",
       "avatar": "/images/marc.jpg",
-      "mood": "🤪",
+      "mood": "🥰",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 24,
-      "streak": 22,
-      "lastSent": 1786862908499,
+      "total": 34,
+      "streak": 32,
+      "lastSent": 1787700861819,
       "history": []
     },
     "pendingNotifications": [],
@@ -1569,8 +1569,22 @@
         "addedBy": {
           "username": "Marc"
         }
+      },
+      {
+        "id": "1787383563627",
+        "title": "Premier baisé",
+        "desc": "Sous un énorme orage. C'était trop bien 🥰",
+        "date": "2026-08-21",
+        "lat": 47.1304184,
+        "lng": 6.5254486,
+        "addedBy": {
+          "username": "marc"
+        }
       }
-    ]
+    ],
+    "friendshipLevel": 3.7,
+    "updatedBy": "marc",
+    "pendingFriendshipProposal": null
   },
   "blandine": {
     "username": "blandine",
@@ -1578,14 +1592,14 @@
     "profile": {
       "name": "Blandine",
       "avatar": "/images/blandine.jpg",
-      "mood": "😟",
+      "mood": "😶",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 24,
-      "streak": 21,
-      "lastSent": 1786833713996,
+      "total": 34,
+      "streak": 31,
+      "lastSent": 1787700068704,
       "history": []
     },
     "pendingNotifications": [],
@@ -3142,7 +3156,21 @@
         "addedBy": {
           "username": "Marc"
         }
+      },
+      {
+        "id": "1787383563627",
+        "title": "Premier baisé",
+        "desc": "Sous un énorme orage. C'était trop bien 🥰",
+        "date": "2026-08-21",
+        "lat": 47.1304184,
+        "lng": 6.5254486,
+        "addedBy": {
+          "username": "marc"
+        }
       }
-    ]
+    ],
+    "pendingFriendshipProposal": null,
+    "friendshipLevel": 3.7,
+    "updatedBy": "marc"
   }
 }

@@ -29,6 +29,8 @@ import { initMap } from './map.js';
 import { initRdv } from './rdv.js';
 import { initQuestion } from './question.js';
 import { initOnAFait } from './onafait.js';
+import { initMessaging } from './messaging.js';
+
 
 
 
@@ -53,4 +55,5 @@ initAuth((userData) => {
     initRdv();
     initQuestion(userData);
     initOnAFait();
+    initMessaging();
 });

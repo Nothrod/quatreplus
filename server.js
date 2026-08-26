@@ -50,6 +50,7 @@ app.use('/api/rdv', require('./routes/rdv'));
 app.use('/api/question', require('./routes/question'));
 app.use('/api/onafait', require('./routes/onafait'));
 app.use('/api/places', placesRoutes);
+app.use('/api/messaging', require('./routes/messaging'));
 
 // Page d'accueil
 app.get('/', (req, res) => {
