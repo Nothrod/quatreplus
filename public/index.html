@@ -38,6 +38,22 @@
             <header>
                 <h2 id="welcome-msg">Bonjour</h2>
                 <button id="logout-btn" class="btn-secondary">Déconnexion</button>
+                  <div class="notification-bell" id="notificationBell">
+     <button class="bell-btn" aria-label="Notifications">
+       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2">
+         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+         <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+       </svg>
+       <span class="bell-badge" id="bellBadge" hidden>0</span>
+     </button>
+     <div class="notification-dropdown" id="notificationDropdown">
+       <div class="notif-header">
+         <h4>Notifications</h4>
+         <button class="mark-read" id="markAllRead">Tout marquer lu</button>
+       </div>
+       <ul class="notif-list" id="notifList"></ul>
+     </div>
+   </div>
             </header>
 
             <main>

@@ -1,3 +1,6 @@
+// ➕ 1. IMPORT DU SYSTÈME DE NOTIFICATION (Nécessaire pour que le moteur de polling s'active)
+import { notifSystem } from './notif-bell.js';
+
 export function initMessaging() {
     const entryBtn = document.getElementById('widget-messaging-entry');
     const modal = document.getElementById('messaging-modal');
@@ -72,8 +75,13 @@ export function initMessaging() {
 
             if (mode === 'force' || latestId !== lastMessageId) {
                 const nearBottom = historyContainer.scrollHeight - historyContainer.scrollTop - historyContainer.clientHeight < 120;
+
+                // ✅ SUPPRIMÉ : La notification est maintenant gérée par le serveur (routes/messaging.js)
+                // pour assurer la synchronisation entre Marc et Blandine.
+
                 lastMessageId = latestId;
                 renderMessages(messages);
+
                 if (mode === 'force' || nearBottom) {
                     historyContainer.scrollTop = historyContainer.scrollHeight;
                 }

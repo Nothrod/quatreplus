@@ -3,16 +3,8 @@ const router = express.Router();
 const fs = require('fs');
 const path = require('path');
 
-let users = {};
-let saveStore = () => console.warn('⚠️ saveStore non disponible');
-
-try {
-    const store = require('../data/store');
-    users = store.users || {};
-    if (typeof store.saveStore === 'function') saveStore = store.saveStore;
-} catch (err) {
-    console.error('❌ Erreur critique chargement store:', err);
-}
+// ➕ 1. IMPORT STANDARD DU STORE GLOBAL (plus propre et fiable)
+const { users, saveStore } = require('../data/store');
 
 const checkAuth = (req, res, next) => {
     if (!req.session.user || !req.session.user.username) return res.status(401).json({ error: 'Non connecté' });
@@ -47,6 +39,7 @@ router.post('/toggle', checkAuth, (req, res) => {
         const { id, completed } = req.body;
         const currentUser = req.currentUser;
         const otherUser = currentUser === 'marc' ? 'blandine' : 'marc';
+        const displayName = currentUser === 'marc' ? 'Marc' : 'Blandine';
 
         const currentUserData = users[currentUser];
         const otherUserData = users[otherUser];
@@ -72,6 +65,18 @@ router.post('/toggle', checkAuth, (req, res) => {
                 currentUserData.completedOnAFait.push(id);
                 updatePoints(currentUserData, 1);
                 updatePoints(otherUserData, 1);
+
+                // ➕ 2. NOUVEAU : Ajouter une notification pour l'autre personne (seulement à la validation)
+                if (!users[otherUser].pendingNotifications) {
+                    users[otherUser].pendingNotifications = [];
+                }
+                users[otherUser].pendingNotifications.push({
+                    id: Date.now().toString(),
+                                                           type: 'badge', // Utilise l'icône 🏆, parfait pour une validation de moment
+                                                           text: `${displayName} a validé un nouveau moment : "${item.title}" 🎉`,
+                                                           link: '/', // Ou l'URL de ton onglet onafait si tu en as une
+                                                           createdAt: Date.now()
+                });
             }
         } else {
             currentUserData.completedOnAFait = currentUserData.completedOnAFait.filter(itemId => itemId !== id);
@@ -79,9 +84,9 @@ router.post('/toggle', checkAuth, (req, res) => {
             updatePoints(otherUserData, -1);
         }
 
+        // ➕ 3. SAUVEGARDE GLOBALE
         saveStore(users);
 
-        // Calcul du niveau affiché (plancher à 0.1 près, max 4.0)
         const displayLevel = Math.min(4.0, Math.floor(currentUserData.friendshipLevel * 10) / 10);
 
         res.json({ success: true, newLevel: currentUserData.friendshipLevel, displayLevel });

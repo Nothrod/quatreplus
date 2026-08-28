@@ -114,5 +114,44 @@ async function sendNotification(targetUser, title, body, icon, url) {
     await Promise.all(promises);
 }
 
+// routes/notifications.js (à ajouter à la fin du fichier, avant module.exports)
+
+// 1. Récupérer les notifications en attente de l'utilisateur connecté
+router.get('/pending', (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+
+    const currentUser = req.session.user; // 'marc' ou 'blandine'
+    const notifications = users[currentUser].pendingNotifications || [];
+
+    // On les renvoie et on vide le tableau (car elles sont maintenant "livrées" au frontend)
+    users[currentUser].pendingNotifications = [];
+    saveStore(users);
+
+    res.json({ notifications });
+});
+
+// 2. (Optionnel) Ajouter une notification manuellement (utile pour tester)
+router.post('/test', (req, res) => {
+    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+
+    const otherUser = req.session.user === 'marc' ? 'blandine' : 'marc';
+    const { type, text, link } = req.body;
+
+    if (!users[otherUser].pendingNotifications) {
+        users[otherUser].pendingNotifications = [];
+    }
+
+    users[otherUser].pendingNotifications.push({
+        id: Date.now().toString(),
+                                               type: type || 'info',
+                                               text: text || 'Notification de test',
+                                               link: link || '/',
+                                               createdAt: Date.now()
+    });
+
+    saveStore(users);
+    res.json({ success: true });
+});
+
 module.exports = router;
 module.exports.sendNotification = sendNotification;

@@ -1,3 +1,6 @@
+// ➕ 1. IMPORT DU SYSTÈME DE NOTIFICATION (Nécessaire pour que le moteur de polling s'active)
+import { notifSystem } from './notif-bell.js';
+
 export function initMap() {
     console.log('🗺️ Module Carte chargé');
 
@@ -9,7 +12,6 @@ export function initMap() {
     const deleteBtn = document.getElementById('delete-memory-btn');
     const modalTitle = document.getElementById('memory-modal-title');
 
-    // Déclaration UNIQUE des variables de recherche
     const addressInput = document.getElementById('memory-address');
     const suggestionsList = document.getElementById('address-suggestions');
     let searchTimeout = null;
@@ -37,7 +39,6 @@ export function initMap() {
                 attribution: '&copy; OpenStreetMap', maxZoom: 19
             }).addTo(map);
 
-            // ✅ Ajouter les marqueurs si les données sont déjà chargées
             if (memoriesData.length > 0) {
                 memoriesData.forEach(addMarkerToMap);
                 const group = new L.featureGroup(markers);
@@ -74,7 +75,6 @@ export function initMap() {
         markers.push(marker);
     }
 
-    // --- AUTOCOMPLÉTION D'ADRESSE (Logique éprouvée) ---
     if (addressInput && suggestionsList) {
         addressInput.addEventListener('input', (e) => {
             clearTimeout(searchTimeout);
@@ -87,7 +87,6 @@ export function initMap() {
 
             searchTimeout = setTimeout(async () => {
                 try {
-                    // Appel vers notre propre serveur (pas de problème CORS)
                     const r = await fetch(`/api/map/search-address?q=${encodeURIComponent(query)}`);
                     const results = await r.json();
 
@@ -131,7 +130,6 @@ export function initMap() {
         }[c]));
     }
 
-    // --- GESTION DE LA LISTE ---
     window.renderMemoryList = function() {
         if (!listContainer) return;
         if (memoriesData.length === 0) {
@@ -181,7 +179,7 @@ export function initMap() {
         deleteBtn.style.display = 'block';
 
         modal.classList.add('active');
-    };
+    }
 
     function openModalForAdd() {
         modalTitle.textContent = 'Ajouter un souvenir';
@@ -200,8 +198,6 @@ export function initMap() {
         deleteBtn.style.display = 'none';
         if (suggestionsList) suggestionsList.style.display = 'none';
     }
-
-    // --- ÉCOUTEURS D'ÉVÉNEMENTS ---
 
     if (addBtn) {
         addBtn.addEventListener('click', () => {
@@ -252,6 +248,9 @@ export function initMap() {
                     } else {
                         memoriesData.push(data.memory);
                         addMarkerToMap(data.memory);
+
+                        // ✅ SUPPRIMÉ : La notification est maintenant gérée par le serveur (routes/map.js)
+                        // pour assurer la synchronisation entre Marc et Blandine.
                     }
 
                     window.renderMemoryList();

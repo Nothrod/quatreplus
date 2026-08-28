@@ -2,19 +2,8 @@
 const express = require('express');
 const router = express.Router();
 
-// ✅ Import ultra-sécurisé du store
-let users = {};
-let saveStore = () => console.warn('⚠️ saveStore non disponible');
-
-try {
-    const store = require('../data/store');
-    users = store.users || {};
-    if (typeof store.saveStore === 'function') {
-        saveStore = store.saveStore;
-    }
-} catch (err) {
-    console.error('❌ Erreur critique chargement store:', err);
-}
+// ✅ Import standard et fiable du store global
+const { users, saveStore } = require('../data/store');
 
 // 🌍 Helper : obtient la date au format YYYY-MM-DD dans le fuseau horaire de Paris
 const getParisDateString = (timestamp) => {
@@ -42,7 +31,6 @@ router.get('/', checkAuth, (req, res) => {
         if (!currentUserData.thinkOfYou) currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
         if (!otherUserData.thinkOfYou) otherUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
 
-        // 🔄 Vérification basée sur minuit heure de Paris (et non plus 24h glissantes)
         const lastSentDate = currentUserData.thinkOfYou.lastSent ? getParisDateString(currentUserData.thinkOfYou.lastSent) : null;
         const todayParis = getParisDateString(Date.now());
         const canSend = lastSentDate !== todayParis;
@@ -59,62 +47,27 @@ router.get('/', checkAuth, (req, res) => {
     }
 });
 
-router.get('/check', checkAuth, (req, res) => {
-    try {
-        const currentUserData = users[req.currentUser];
-        if (!currentUserData) return res.status(500).json({ error: 'Utilisateur introuvable' });
-
-        if (!currentUserData.pendingNotifications) {
-            currentUserData.pendingNotifications = [];
-        }
-
-        const notifications = [...currentUserData.pendingNotifications];
-
-        // On vide le tableau
-        currentUserData.pendingNotifications = [];
-
-        // ✅ Sauvegarde protégée
-        try {
-            saveStore(users);
-            console.log(`✅ [CHECK] Notifications vidées et sauvegardées pour ${req.currentUser}`);
-        } catch (saveErr) {
-            console.error('❌ Échec de la sauvegarde (check):', saveErr);
-        }
-
-        res.json({
-            success: true,
-            notifications: notifications,
-            count: notifications.length
-        });
-    } catch (err) {
-        console.error('❌ Erreur critique dans /check:', err);
-        res.status(500).json({ error: 'Erreur serveur interne' });
-    }
-});
-
 router.post('/send', checkAuth, (req, res) => {
     try {
         const currentUserData = users[req.currentUser];
         const otherUsername = req.currentUser === 'marc' ? 'blandine' : 'marc';
         const otherUserData = users[otherUsername];
+        const displayName = req.currentUser === 'marc' ? 'Marc' : 'Blandine';
 
         if (!currentUserData || !otherUserData) return res.status(500).json({ error: 'Utilisateur introuvable' });
         if (!currentUserData.thinkOfYou) currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null };
         if (!otherUserData.pendingNotifications) otherUserData.pendingNotifications = [];
 
-        // 🔄 Vérification basée sur minuit heure de Paris
         const lastSentDate = currentUserData.thinkOfYou.lastSent ? getParisDateString(currentUserData.thinkOfYou.lastSent) : null;
         const todayParis = getParisDateString(Date.now());
         const canSend = lastSentDate !== todayParis;
 
         if (!canSend) return res.status(400).json({ error: 'Déjà envoyé aujourd\'hui' });
 
+        const previousStreak = currentUserData.thinkOfYou.streak;
         currentUserData.thinkOfYou.total += 1;
 
-        // 🔥 Calcul de la streak basé sur le calendrier de Paris
-        // On soustrait 24h pour obtenir la date d'hier, puis on la formate en heure de Paris
         const yesterdayParis = getParisDateString(Date.now() - (24 * 60 * 60 * 1000));
-
         if (lastSentDate === yesterdayParis) {
             currentUserData.thinkOfYou.streak += 1;
         } else {
@@ -123,13 +76,13 @@ router.post('/send', checkAuth, (req, res) => {
 
         currentUserData.thinkOfYou.lastSent = Date.now();
 
+        // ➕ NOUVEAU : Notification pour l'autre personne (Format compatible avec notif-bell.js)
         otherUserData.pendingNotifications.push({
-            type: 'thinkofyou',
-            from: req.currentUser,
-            fromName: req.currentUser === 'marc' ? 'Marc' : 'Blandine',
-            streak: currentUserData.thinkOfYou.streak,
-            timestamp: Date.now(),
-                                                read: false
+            id: Date.now().toString(),
+                                                type: 'info', // Utilise l'icône 🔔 par défaut. Mets 'badge' si tu préfères 🏆
+                                                text: `${displayName} t'a envoyé un "Je pense à toi" ! (Série : ${currentUserData.thinkOfYou.streak} jours) 🤍`,
+                                                link: '/',
+                                                createdAt: Date.now()
         });
 
         try {

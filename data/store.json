@@ -10,12 +10,62 @@
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 34,
-      "streak": 32,
-      "lastSent": 1787700861819,
+      "total": 36,
+      "streak": 34,
+      "lastSent": 1787872393351,
       "history": []
     },
-    "pendingNotifications": [],
+    "pendingNotifications": [
+      {
+        "id": "1787751104026",
+        "type": "chat",
+        "text": "Blandine t'a envoyé un message : \"Fonctionne pas ?\"",
+        "link": "/",
+        "createdAt": 1787751104026
+      },
+      {
+        "id": "1787751566665",
+        "type": "chat",
+        "text": "Blandine t'a envoyé un message : \"Non j'ai rien j'ai l'impressio...\"",
+        "link": "/",
+        "createdAt": 1787751566665
+      },
+      {
+        "id": "1787752852223",
+        "type": "chat",
+        "text": "Blandine t'a envoyé un message : \"Wesh\"",
+        "link": "/",
+        "createdAt": 1787752852223
+      },
+      {
+        "id": "1787753025398",
+        "type": "question",
+        "text": "Blandine a répondu à la question : « Quel genre de préliminaires te fait le plus d'effet ? »",
+        "link": "/",
+        "createdAt": 1787753025398
+      },
+      {
+        "id": "1787787023329",
+        "type": "info",
+        "text": "Blandine t'a envoyé un \"Je pense à toi\" ! (Série : 32 jours) 🤍",
+        "link": "/",
+        "createdAt": 1787787023329
+      },
+      {
+        "id": "1787825613952",
+        "type": "chat",
+        "text": "Blandine t'a envoyé un message : \"Redis le contexte ? Lol\"",
+        "link": "/",
+        "createdAt": 1787825613952
+      },
+      {
+        "id": "1787826394058",
+        "type": "chat",
+        "text": "Blandine t'a envoyé un message : \"Oui mais c'était quoi l'histoi...\"",
+        "link": "/",
+        "createdAt": 1787826394058
+      }
+    ],
     "completedOnAFait": [],
     "placesToVisit": [
       {
@@ -1579,6 +1629,17 @@
         "lng": 6.5254486,
         "addedBy": {
           "username": "marc"
+        }
+      },
+      {
+        "id": "1787743462504",
+        "title": "La buée dans la voiture ",
+        "desc": "🫂",
+        "date": "2026-08-25",
+        "lat": 47.4158851,
+        "lng": 6.4958077,
+        "addedBy": {
+          "username": "blandine"
         }
       }
     ],
@@ -1592,17 +1653,102 @@
     "profile": {
       "name": "Blandine",
       "avatar": "/images/blandine.jpg",
-      "mood": "😶",
+      "mood": "🤗",
       "music": "En attente...",
       "startDate": "2023-10-27"
     },
     "thinkOfYou": {
-      "total": 34,
-      "streak": 31,
-      "lastSent": 1787700068704,
+      "total": 35,
+      "streak": 32,
+      "lastSent": 1787787023329,
       "history": []
     },
-    "pendingNotifications": [],
+    "pendingNotifications": [
+      {
+        "id": "1787746102874",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"Retest\"",
+        "link": "/",
+        "createdAt": 1787746102874
+      },
+      {
+        "id": "1787746115207",
+        "type": "humeur",
+        "text": "Marc a changé son humeur : 😊 ➔ 🥰",
+        "link": "/",
+        "createdAt": 1787746115207
+      },
+      {
+        "id": "1787751373278",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"Non je crois pas\"",
+        "link": "/",
+        "createdAt": 1787751373278
+      },
+      {
+        "id": "1787751378495",
+        "type": "humeur",
+        "text": "Marc a changé son humeur : 🥰 ➔ 😊",
+        "link": "/",
+        "createdAt": 1787751378495
+      },
+      {
+        "id": "1787751383072",
+        "type": "humeur",
+        "text": "Marc a changé son humeur : 😊 ➔ 🥰",
+        "link": "/",
+        "createdAt": 1787751383072
+      },
+      {
+        "id": "1787751392658",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"Quand je change mon humeur ?\"",
+        "link": "/",
+        "createdAt": 1787751392658
+      },
+      {
+        "id": "1787751993596",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"NUL WOLA\"",
+        "link": "/",
+        "createdAt": 1787751993596
+      },
+      {
+        "id": "1787786944002",
+        "type": "info",
+        "text": "Marc t'a envoyé un \"Je pense à toi\" ! (Série : 33 jours) 🤍",
+        "link": "/",
+        "createdAt": 1787786944002
+      },
+      {
+        "id": "1787824541467",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"Pour la robe en velours tu éta...\"",
+        "link": "/",
+        "createdAt": 1787824541467
+      },
+      {
+        "id": "1787825686287",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"On parlait de robe sexy\"",
+        "link": "/",
+        "createdAt": 1787825686287
+      },
+      {
+        "id": "1787838443245",
+        "type": "chat",
+        "text": "Marc t'a envoyé un message : \"Ben tu avais dit que tu voulai...\"",
+        "link": "/",
+        "createdAt": 1787838443245
+      },
+      {
+        "id": "1787872393351",
+        "type": "info",
+        "text": "Marc t'a envoyé un \"Je pense à toi\" ! (Série : 34 jours) 🤍",
+        "link": "/",
+        "createdAt": 1787872393351
+      }
+    ],
     "completedOnAFait": [],
     "placesToVisit": [
       {
@@ -3166,6 +3312,17 @@
         "lng": 6.5254486,
         "addedBy": {
           "username": "marc"
+        }
+      },
+      {
+        "id": "1787743462504",
+        "title": "La buée dans la voiture ",
+        "desc": "🫂",
+        "date": "2026-08-25",
+        "lat": 47.4158851,
+        "lng": 6.4958077,
+        "addedBy": {
+          "username": "blandine"
         }
       }
     ],

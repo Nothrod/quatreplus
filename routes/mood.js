@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { users } = require('../data/store');
+
+// ➕ 1. IMPORT DU STORE GLOBAL (users ET saveStore)
+const { users, saveStore } = require('../data/store');
 
 const checkAuth = (req, res, next) => {
     if (!req.session.user || !req.session.user.username) {
@@ -37,12 +39,33 @@ router.post('/', checkAuth, (req, res) => {
     const { mood } = req.body;
     const currentUserData = findUser(req.currentUser);
 
+    const otherUsername = req.currentUser === 'marc' ? 'blandine' : 'marc';
+    const displayName = req.currentUser === 'marc' ? 'Marc' : 'Blandine';
+
     if (!currentUserData) return res.status(500).json({ error: 'Utilisateur introuvable' });
 
     if (!currentUserData.profile) currentUserData.profile = {};
+
+    // On garde l'ancienne humeur pour l'afficher dans la notification
+    const oldMood = currentUserData.profile.mood || '💭';
     currentUserData.profile.mood = mood;
 
-    // TODO: Appeler ta fonction de sauvegarde globale ici si tu en as une (ex: saveData())
+    // ➕ 2. NOUVEAU : Ajouter une notification en attente pour l'autre personne
+    if (!users[otherUsername]) users[otherUsername] = {}; // Sécurité
+    if (!users[otherUsername].pendingNotifications) {
+        users[otherUsername].pendingNotifications = [];
+    }
+
+    users[otherUsername].pendingNotifications.push({
+        id: Date.now().toString(),
+                                                   type: 'humeur',
+                                                   text: `${displayName} a changé son humeur : ${oldMood} ➔ ${mood}`,
+                                                   link: '/',
+                                                   createdAt: Date.now()
+    });
+
+    // ➕ 3. SAUVEGARDE GLOBALE (remplace le TODO)
+    saveStore(users);
 
     res.json({ success: true, mood });
 });

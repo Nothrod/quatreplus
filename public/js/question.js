@@ -1,3 +1,6 @@
+// ➕ 1. IMPORT DU SYSTÈME DE NOTIFICATION (Active le polling en arrière-plan)
+import { notifSystem } from './notif-bell.js';
+
 const categoryLabels = {
     je_nai_jamais: { label: '🙈 Je n\'ai jamais', class: 'badge-blue' },
     drole: { label: '😂 Drôle', class: 'badge-yellow' },
@@ -63,12 +66,13 @@ export function initQuestion(userData) {
             categoryBadge.className = `category-badge ${catInfo.class}`;
         }
 
-        // ✨ CORRECTION : On vérifie à la fois la version minuscule et majuscule par sécurité
         const myAnswer = q[`${currentUsername}_answer`] || q[`${currentUsername.charAt(0).toUpperCase() + currentUsername.slice(1)}_answer`];
         const otherAnswer = q[`${otherUsername}_answer`] || q[`${otherUsername.charAt(0).toUpperCase() + otherUsername.slice(1)}_answer`];
 
         const hasAnswered = !!myAnswer;
         const otherHasAnswered = !!otherAnswer;
+
+        // ✅ SUPPRIMÉ : La logique d'attente et de notification est maintenant gérée par le serveur (routes/question.js)
 
         if (comeBackTomorrow && otherHasAnswered) {
             if (answerForm) answerForm.style.display = 'none';
@@ -78,7 +82,6 @@ export function initQuestion(userData) {
                 waitingMsg.style.fontWeight = "600";
                 waitingMsg.style.textAlign = "center";
                 waitingMsg.style.padding = "15px 0";
-
 
                 waitingMsg.innerHTML = `
                 <div style="margin-bottom: 10px;">Vous avez tous les deux répondu ! 🎉</div>
@@ -121,7 +124,6 @@ export function initQuestion(userData) {
 
         historyList.innerHTML = filteredHistory.map(q => {
             const catInfo = categoryLabels[q.category] || { label: q.category, class: 'badge-blue' };
-            // On utilise les clés normalisées (minuscules) grâce au backend
             const marcAns = q.marc_answer ? `<p><strong>Marc :</strong> ${q.marc_answer}</p>` : '<p style="color: var(--text-secondary); font-style: italic;">Marc n\'a pas encore répondu</p>';
             const blandineAns = q.blandine_answer ? `<p><strong>Blandine :</strong> ${q.blandine_answer}</p>` : '<p style="color: var(--text-secondary); font-style: italic;">Blandine n\'a pas encore répondu</p>';
             const dateStr = new Date(q.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long' });

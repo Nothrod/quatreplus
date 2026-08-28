@@ -8,24 +8,46 @@ router.get('/memories', (req, res) => {
     res.json({ memories: users.marc.memories || [] });
 });
 
-// Ajouter un souvenir
+// routes/map.js (Exemple pour la route POST d'ajout de souvenir)
+
 router.post('/memories', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+
+    const currentUser = req.session.user; // 'marc' ou 'blandine'
+    const otherUser = currentUser === 'marc' ? 'blandine' : 'marc';
+    const displayName = currentUser === 'marc' ? 'Marc' : 'Blandine';
+
     const { title, desc, date, lat, lng } = req.body;
 
     const newMemory = {
-        id: Date.now().toString(), // String pour cohérence avec places.js
-            title, desc, date,
+        id: Date.now().toString(),
+            title,
+            desc,
+            date,
             lat: parseFloat(lat),
             lng: parseFloat(lng),
-            addedBy: req.session.user
+            addedBy: currentUser
     };
 
+    // Sauvegarde dans les deux comptes (comme tu le fais déjà)
     if (!users.marc.memories) users.marc.memories = [];
     users.marc.memories.push(newMemory);
     users.blandine.memories = [...users.marc.memories];
-    saveStore(users);
 
+    // ➕ NOUVEAU : Ajouter une notification en attente pour l'autre personne
+    if (!users[otherUser].pendingNotifications) {
+        users[otherUser].pendingNotifications = [];
+    }
+
+    users[otherUser].pendingNotifications.push({
+        id: Date.now().toString(),
+                                               type: 'lieux', // ou 'visiter' selon la carte
+                                               text: `${displayName} a ajouté un nouveau souvenir : "${title}"`,
+                                               link: '/map',
+                                               createdAt: Date.now()
+    });
+
+    saveStore(users);
     res.json({ success: true, memory: newMemory });
 });
 

@@ -1,5 +1,8 @@
 // public/js/thinkofyou.js
 
+// ➕ 1. IMPORT DU SYSTÈME DE NOTIFICATION (Active le polling en arrière-plan pour les notifs de l'autre)
+import { notifSystem } from './notif-bell.js';
+
 export function initThinkOfYou() {
     const thinkBtn = document.getElementById('think-btn');
     const thinkSubtitle = document.getElementById('think-subtitle');
@@ -8,6 +11,9 @@ export function initThinkOfYou() {
     const otherThinkNameEl = document.getElementById('other-think-name');
     const otherTotalEl = document.getElementById('other-total');
     const resetBtn = document.getElementById('reset-think-btn');
+
+    let previousStreak = 0;
+    const badgeThresholds = [7, 30, 100, 365];
 
     function updateBadges(streak) {
         const badges = [
@@ -38,6 +44,8 @@ export function initThinkOfYou() {
             if (otherThinkNameEl && data.otherName) otherThinkNameEl.textContent = data.otherName;
             if (otherTotalEl) otherTotalEl.textContent = data.otherStats.total;
 
+            previousStreak = data.myStats.streak;
+
             if (thinkBtn) {
                 if (data.canSend) {
                     thinkBtn.disabled = false;
@@ -55,7 +63,6 @@ export function initThinkOfYou() {
         }
     }
 
-    // ✅ SÉCURITÉ : On vérifie que le bouton existe avant d'ajouter l'écouteur
     if (thinkBtn) {
         thinkBtn.addEventListener('click', async () => {
             if (thinkBtn.disabled) return;
@@ -66,13 +73,24 @@ export function initThinkOfYou() {
             try {
                 const res = await fetch('/api/thinkofyou/send', { method: 'POST' });
                 const data = await res.json();
+
                 if (data.success) {
                     if (myTotalEl) myTotalEl.textContent = data.stats.total;
                     if (myStreakEl) myStreakEl.textContent = data.stats.streak;
                     if (thinkSubtitle) thinkSubtitle.textContent = 'Envoyé ! 🤍';
-                    updateBadges(data.stats.streak);
 
-                    thinkBtn.classList.add('sent'); // Masque le cœur via CSS
+                    updateBadges(data.stats.streak);
+                    thinkBtn.classList.add('sent');
+
+                    // ➕ 2. DÉTECTION LOCALE DU DÉBLOCAGE DE BADGE (Instantané et parfait)
+                    const newStreak = data.stats.streak;
+                    const unlockedThreshold = badgeThresholds.find(t => previousStreak < t && newStreak >= t);
+
+                    if (unlockedThreshold) {
+                        notifSystem.badgeDebloque(`Je pense à toi (${unlockedThreshold} jours)`);
+                    }
+
+                    previousStreak = newStreak;
 
                     setTimeout(() => {
                         if (thinkSubtitle) thinkSubtitle.textContent = 'Déjà envoyé aujourd\'hui ✓';
@@ -90,7 +108,6 @@ export function initThinkOfYou() {
         });
     }
 
-    // ✅ SÉCURITÉ : On vérifie que le bouton reset existe
     if (resetBtn) {
         resetBtn.addEventListener('click', async () => {
             if (!confirm('Réinitialiser le compteur "Je pense à toi" ?')) return;
