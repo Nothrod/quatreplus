@@ -39,7 +39,7 @@ router.post('/subscribe', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
     
     const subscription = req.body;
-    const username = req.session.user;
+    const username = req.session.user.username;
     
     const subs = loadSubscriptions();
     
@@ -118,13 +118,18 @@ async function sendNotification(targetUser, title, body, icon, url) {
 
 // 1. Récupérer les notifications en attente de l'utilisateur connecté
 router.get('/pending', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    if (!req.session.user || !req.session.user.username) return res.status(401).json({ error: 'Non connecté' });
 
-    const currentUser = req.session.user; // 'marc' ou 'blandine'
-    const notifications = users[currentUser].pendingNotifications || [];
+    // ✅ CORRECTION : Extraire le username de l'objet session
+    const currentUser = req.session.user.username;
+    const userData = users[currentUser];
 
-    // On les renvoie et on vide le tableau (car elles sont maintenant "livrées" au frontend)
-    users[currentUser].pendingNotifications = [];
+    if (!userData) return res.status(500).json({ error: 'Utilisateur introuvable' });
+
+    const notifications = userData.pendingNotifications || [];
+
+    // On vide le tableau car les notifs sont "livrées" au frontend
+    userData.pendingNotifications = [];
     saveStore(users);
 
     res.json({ notifications });
@@ -132,10 +137,11 @@ router.get('/pending', (req, res) => {
 
 // 2. (Optionnel) Ajouter une notification manuellement (utile pour tester)
 router.post('/test', (req, res) => {
-    if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
+    if (!req.session.user || !req.session.user.username) return res.status(401).json({ error: 'Non connecté' });
 
-    const otherUser = req.session.user === 'marc' ? 'blandine' : 'marc';
-    const { type, text, link } = req.body;
+    // ✅ CORRECTION : Utiliser .username pour la comparaison
+    const currentUsername = req.session.user.username;
+    const otherUser = currentUsername === 'marc' ? 'blandine' : 'marc';
 
     if (!users[otherUser].pendingNotifications) {
         users[otherUser].pendingNotifications = [];

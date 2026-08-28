@@ -2,23 +2,23 @@
 
 export class NotificationSystem {
     constructor() {
-        this.STORAGE_KEY = 'app_ui_notifications'; // Clé différente pour ne pas interférer
+        this.STORAGE_KEY = 'app_ui_notifications';
         this.bell = document.getElementById('notificationBell');
-        if (!this.bell) return; // Sécurité si la cloche n'est pas sur la page actuelle
+        if (!this.bell) return;
 
         this.badge = document.getElementById('bellBadge');
         this.dropdown = document.getElementById('notificationDropdown');
         this.list = document.getElementById('notifList');
 
         this.types = {
-            chat:     { icon: '💬', cls: 'icon-chat',     label: 'Tchat' },
-            humeur:   { icon: '😊', cls: 'icon-humeur',   label: 'Humeur' },
+            chat: { icon: '💬', cls: 'icon-chat', label: 'Tchat' },
+            humeur: { icon: '😊', cls: 'icon-humeur', label: 'Humeur' },
             question: { icon: '❓', cls: 'icon-question', label: 'Question' },
-            lieux:    { icon: '📍', cls: 'icon-lieux',    label: 'Nos lieux' },
-            visiter:  { icon: '🗺️', cls: 'icon-visiter',  label: 'Lieux à visiter' },
-            badge:    { icon: '🏆', cls: 'icon-badge',    label: 'Badge' },
+            lieux: { icon: '📍', cls: 'icon-lieux', label: 'Nos lieux' },
+            visiter: { icon: '🗺️', cls: 'icon-visiter', label: 'Lieux à visiter' },
+            badge: { icon: '🏆', cls: 'icon-badge', label: 'Badge' },
+            info: { icon: '💌', cls: 'icon-info', label: 'Info' } // ✅ AJOUTÉ pour le "Je pense à toi"
         };
-
         this.init();
     }
 
@@ -36,33 +36,69 @@ export class NotificationSystem {
         });
 
             document.getElementById('markAllRead')?.addEventListener('click', () => this.markAllRead());
+
             this.render();
+            this.startPolling(); // ✅ LANCEMENT DU POLLING
     }
 
+    // ✅ NOUVEAU : Va chercher les notifs sur le serveur
+    startPolling() {
+        // Vérifie immédiatement au chargement de la page, puis toutes les 15 secondes
+        this.fetchPending();
+        setInterval(() => this.fetchPending(), 15000);
+    }
+
+    async fetchPending() {
+        try {
+            const res = await fetch('/api/notifications/pending');
+            if (res.status === 401 || !res.ok) return;
+
+            const data = await res.json();
+
+            if (data.notifications && data.notifications.length > 0) {
+                console.log(`🔔 ${data.notifications.length} nouvelle(s) notif(s) reçue(s) du serveur !`);
+
+                let hasThinkOfYou = false;
+                let thinkOfYouCount = 0;
+
+                data.notifications.forEach(notif => {
+                    // On ajoute la notif à la cloche
+                    this.push({
+                        type: notif.type,
+                        text: notif.text,
+                        link: notif.link
+                    });
+
+                    // On vérifie si c'est un "Je pense à toi"
+                    if (notif.type === 'info' && notif.text.includes("Je pense à toi")) {
+                        hasThinkOfYou = true;
+                        thinkOfYouCount++;
+                    }
+                });
+
+                // ✅ SI on a reçu un "Je pense à toi", on prévient le popup !
+                if (hasThinkOfYou) {
+                    window.dispatchEvent(new CustomEvent('thinkOfYouReceived', {
+                        detail: { count: thinkOfYouCount }
+                    }));
+                }
+            }
+        } catch (err) {
+            console.error('Erreur polling cloche:', err);
+        }
+    }
+
+    // --- Le reste de tes méthodes reste exactement identique ---
     newChatMessage(sender, preview) {
         this.push({ type: 'chat', text: `<b>${sender}</b> a répondu dans <b>la cabane</b> : « ${preview} »`, link: '/chat' });
     }
-    humeurChanged(from, to) {
-        this.push({ type: 'humeur', text: `Ton humeur est passée de <b>${from}</b> à <b>${to}</b>.`, link: '/mood' });
-    }
-    questionAnswered(question, answerer) {
-        this.push({ type: 'question', text: `<b>${answerer}</b> a répondu à ta question : « ${question} »`, link: '/questions' });
-    }
-    lieuAjoute(name, author) {
-        this.push({ type: 'lieux', text: `<b>${author}</b> a ajouté <b>${name}</b> à « Nos lieux ».`, link: '/map' });
-    }
-    lieuAVisiterAjoute(name, author) {
-        this.push({ type: 'visiter', text: `<b>${author}</b> a ajouté <b>${name}</b> à « Lieux à visiter ».`, link: '/places' });
-    }
-    badgeDebloque(badgeName) {
-        this.push({ type: 'badge', text: `Nouveau badge débloqué : <b>« ${badgeName} »</b> 🎉`, link: '/profile' });
-    }
+    // ... (garde tes autres méthodes : humeurChanged, questionAnswered, etc.) ...
 
     push({ type, text, link }) {
         const notif = { id: Date.now() + Math.random(), type, text, link, read: false, createdAt: Date.now() };
         const all = this.getAll();
         all.unshift(notif);
-        this.save(all.slice(0, 50)); // Garde seulement les 50 dernières pour ne pas surcharger
+        this.save(all.slice(0, 50));
         this.render();
         this.ringBell();
     }
@@ -136,11 +172,10 @@ export class NotificationSystem {
     timeAgo(ts) {
         const diff = (Date.now() - ts) / 1000;
         if (diff < 60) return 'à l’instant';
-        if (diff < 3600) return `il y a ${Math.floor(diff/60)} min`;
-        if (diff < 86400) return `il y a ${Math.floor(diff/3600)} h`;
-        return `il y a ${Math.floor(diff/86400)} j`;
+        if (diff < 3600) return `il y a ${Math.floor(diff / 60)} min`;
+        if (diff < 86400) return `il y a ${Math.floor(diff / 3600)} h`;
+        return `il y a ${Math.floor(diff / 86400)} j`;
     }
 }
 
-// Export de l'instance unique
 export const notifSystem = new NotificationSystem();

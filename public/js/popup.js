@@ -1,29 +1,24 @@
-// public/js/popup.js
+// ==========================================
+// SYSTÈME DE POPUPS (Je pense à toi + Niveau d'amitié)
+// ==========================================
 
 export function initPopup() {
+    console.log('🎯 Initialisation des popups...');
+
     // ==========================================
     // 1. POPUP "JE PENSE À TOI"
     // ==========================================
     const thinkPopup = document.getElementById('think-popup');
     const thinkPopupClose = document.getElementById('popup-close');
-    const thinkPopupCloseBtn = document.getElementById('think-popup-close-btn'); // Nouveau bouton
+    const thinkPopupCloseBtn = document.getElementById('think-popup-close-btn');
 
-    async function checkThinkOfYou() {
-        try {
-            const res = await fetch('/api/thinkofyou/check');
-            if (!res.ok) return;
-
-            const data = await res.json();
-            if (data.success && data.count > 0) {
-                console.log(`🔔 ${data.count} nouvelle(s) notification(s) "Je pense à toi" !`);
-                if (thinkPopup) {
-                    thinkPopup.classList.add('active');
-                }
-            }
-        } catch (err) {
-            console.error('Erreur vérification notifications:', err);
+    // ✅ Écoute l'événement déclenché par notif-bell.js (pas de polling ici pour éviter les conflits)
+    window.addEventListener('thinkOfYouReceived', (event) => {
+        console.log(`💌 Popup déclenché : ${event.detail.count} "Je pense à toi" reçu(s) !`);
+        if (thinkPopup) {
+            thinkPopup.classList.add('active');
         }
-    }
+    });
 
     // Fermeture via la croix
     if (thinkPopupClose) {
@@ -40,7 +35,7 @@ export function initPopup() {
     }
 
     // ==========================================
-    // 2. POPUP "NIVEAU D'AMITIÉ"
+    // 2. POPUP "NIVEAU D'AMITIÉ" (3.5, 3.6, 3.7, etc.)
     // ==========================================
     const friendshipPopup = document.getElementById('friendship-validation-popup');
     const friendshipPopupText = document.getElementById('popup-text');
@@ -53,7 +48,6 @@ export function initPopup() {
             if (!res.ok) return;
 
             const data = await res.json();
-
             if (data.hasPending && friendshipPopup) {
                 const proposerName = data.proposedBy === 'marc' ? 'Marc' : 'Blandine';
                 friendshipPopupText.textContent = `${proposerName} propose de passer votre amitié à ${data.proposedLevel}+`;
@@ -69,9 +63,9 @@ export function initPopup() {
             try {
                 const res = await fetch('/api/friendship/accept', { method: 'POST' });
                 const data = await res.json();
-
                 if (data.success) {
                     friendshipPopup.classList.remove('active');
+                    // Déclenche un événement pour que le widget se mette à jour si besoin
                     window.dispatchEvent(new Event('friendship-level-updated'));
                     console.log('✅ Niveau d\'amitié validé !');
                 }
@@ -89,15 +83,11 @@ export function initPopup() {
     }
 
     // ==========================================
-    // 3. LANCEMENT ET POLLING
+    // 3. POLLING (Uniquement pour la proposition d'amitié)
     // ==========================================
-    checkThinkOfYou();
+    // On vérifie immédiatement, puis toutes les 30 secondes s'il y a une nouvelle proposition de niveau
     checkFriendshipProposal();
-
-    const pollingInterval = setInterval(() => {
-        checkThinkOfYou();
+    const friendshipPollingInterval = setInterval(() => {
         checkFriendshipProposal();
     }, 30000);
-
-    return () => clearInterval(pollingInterval);
 }
