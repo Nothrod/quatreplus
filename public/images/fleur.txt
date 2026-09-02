@@ -1,0 +1,13 @@
+public/
+  images/
+    plant/
+      seed.png                    (265x405px)
+      seed_germinating.png        (265x405px)
+      first_sprout.png            (265x405px)
+      second_sprout.png           (265x405px)
+      bud.png                     (265x405px)
+      bud_opening.png             (265x405px)
+      flower_open.png             (265x405px)
+      flower_wilting.png          (265x405px)
+      second_sprout_wilting.png   (265x405px)
+      first_sprout_wilting.png    (265x405px)

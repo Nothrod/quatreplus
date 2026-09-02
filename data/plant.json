@@ -1,0 +1,17 @@
+{
+  "stage": "seed",
+  "water": 69.56295055555557,
+  "care": 69.88321033333355,
+  "connection": 51.1818,
+  "epanouissement": 64,
+  "maxEpanouissementThisStage": 69,
+  "lastWater": {
+    "marc": 1788356378570,
+    "blandine": 1788356378570
+  },
+  "lastCare": {
+    "marc": 1788356380075,
+    "blandine": 1788356380075
+  },
+  "lastUpdate": 1788363112081
+}

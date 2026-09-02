@@ -249,8 +249,10 @@ export function initMap() {
                         memoriesData.push(data.memory);
                         addMarkerToMap(data.memory);
 
-                        // ✅ SUPPRIMÉ : La notification est maintenant gérée par le serveur (routes/map.js)
-                        // pour assurer la synchronisation entre Marc et Blandine.
+                        // 🌱 MISE À JOUR DE LA PLANTE TAMAGOTCHI OPTIMISÉE (Connexion +5 pour un nouveau souvenir)
+                        if (typeof window.plantTamagotchi !== 'undefined' && window.plantTamagotchi) {
+                            await window.plantTamagotchi.addConnection(5);
+                        }
                     }
 
                     window.renderMemoryList();
@@ -331,7 +333,7 @@ export function initMap() {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('tab-home').classList.add('active');
-            document.querySelector('[data-tab="tab-home"]').classList.add('active');
+            document.querySelector('[data-tab="tab-home"]')?.classList.add('active');
         });
     }
 

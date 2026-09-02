@@ -1,0 +1,218 @@
+/* ==========================================
+ *  WIDGET PLANTE TAMAGOTCHI
+ *  ========================================== */
+.widget-plant {
+    grid-column: 1 / -1; /* Prend toute la largeur du dashboard */
+    background: linear-gradient(145deg, #ffffff 0%, #f0fdf4 100%);
+    border: 2px solid #bbf7d0;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transition: border-color 0.5s ease, background 0.5s ease;
+}
+
+.widget-plant.wilting {
+    border-color: #fca5a5;
+    background: linear-gradient(145deg, #ffffff 0%, #fef2f2 100%);
+}
+
+.plant-header {
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.plant-header h3 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #166534;
+    font-weight: 700;
+}
+
+.widget-plant.wilting .plant-header h3 {
+    color: #991b1b;
+}
+
+.plant-stage-label {
+    background: #dcfce7;
+    color: #166534;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    border: 1px solid #bbf7d0;
+    transition: all 0.3s ease;
+}
+
+.widget-plant.wilting .plant-stage-label {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #fca5a5;
+}
+
+.plant-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.plant-image-container {
+    width: 265px;
+    height: 405px;
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.plant-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.plant-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6rem;
+    background: transparent;
+}
+
+.plant-gauges {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.gauge-item {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gauge-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.gauge-progress {
+    width: 100%;
+    height: 14px;
+    background: #e2e8f0;
+    border-radius: 7px;
+    overflow: hidden;
+    position: relative;
+}
+
+.gauge-bar {
+    height: 100%;
+    border-radius: 7px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+}
+
+/* Couleurs des jauges */
+.gauge-bar#water-bar { background: linear-gradient(90deg, #60a5fa, #3b82f6); }
+.gauge-bar#care-bar { background: linear-gradient(90deg, #f472b6, #ec4899); }
+.gauge-bar#connection-bar { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+.gauge-bar#epanouissement-bar {
+    background: linear-gradient(90deg, #f472b6, #a78bfa, #34d399);
+}
+
+/* Jauge épanouissement mise en avant */
+.gauge-epanouissement .gauge-label {
+    font-size: 1rem;
+    color: #1e293b;
+    font-weight: 700;
+}
+
+.plant-actions {
+    display: flex;
+    gap: 16px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.plant-action-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px 10px;
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: #475569;
+}
+
+.plant-action-btn:not(:disabled):hover {
+    background: #f0fdf4;
+    border-color: #86efac;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(52, 211, 153, 0.2);
+    color: #166534;
+}
+
+.plant-action-btn:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.plant-action-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.action-icon {
+    font-size: 1.5rem;
+}
+
+.action-text {
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.action-timer {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: #94a3b8;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Animation de fane */
+@keyframes wilt-shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-3deg); }
+    75% { transform: rotate(3deg); }
+}
+
+.widget-plant.wilting .plant-image-container {
+    animation: wilt-shake 3s ease-in-out infinite;
+}
+
+/* Responsive Mobile */
+@media (max-width: 640px) {
+    .plant-image-container {
+        width: 200px;
+        height: 305px;
+    }
+
+    .plant-placeholder {
+        font-size: 4.5rem;
+    }
+
+    .plant-actions {
+        flex-direction: column;
+    }
+}

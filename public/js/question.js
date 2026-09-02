@@ -72,8 +72,6 @@ export function initQuestion(userData) {
         const hasAnswered = !!myAnswer;
         const otherHasAnswered = !!otherAnswer;
 
-        // ✅ SUPPRIMÉ : La logique d'attente et de notification est maintenant gérée par le serveur (routes/question.js)
-
         if (comeBackTomorrow && otherHasAnswered) {
             if (answerForm) answerForm.style.display = 'none';
             if (waitingMsg) {
@@ -174,7 +172,19 @@ export function initQuestion(userData) {
                 });
 
                 const data = await res.json();
-                if (data.success) loadData();
+                if (data.success) {
+                    // 🌱 MISE À JOUR DE LA PLANTE TAMAGOTCHI (Optimisé : 1 seul appel API)
+                    try {
+                        if (typeof window.plantTamagotchi !== 'undefined' && window.plantTamagotchi) {
+                            // La méthode addConnection fait déjà le fetch ET met à jour l'UI
+                            await window.plantTamagotchi.addConnection(8);
+                        }
+                    } catch (plantErr) {
+                        console.error('Erreur mise à jour plante (question):', plantErr);
+                    }
+
+                    loadData();
+                }
             } catch (err) {
                 console.error(err);
                 alert("Erreur de connexion au serveur");

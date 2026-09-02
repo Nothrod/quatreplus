@@ -5,7 +5,7 @@ import { notifSystem } from './notif-bell.js';
 // 1. DONNÉES INITIALES (Seed)
 // ==========================================
 const initialPlaces = [
-    // ... (ton immense tableau de lieux reste exactement pareil, je l'ai raccourci ici pour la lisibilité) ...
+    // ... (ton immense tableau de lieux reste exactement pareil) ...
     { name: "Grotte des Faux Monnayeurs", lat: 47.02942420732729, lng: 6.288137211049027, type: "grotte" }
 ];
 
@@ -20,7 +20,7 @@ let placesData = [];
 // 3. FONCTIONS UTILITAIRES
 // ==========================================
 function getEmojiForType(type) {
-    const map = {
+    const typeMap = {
         'cascade': '🌊', 'chapelle': '⛪', 'chateau': '🏰', 'source': '💧',
         'grotte': '🕳️', 'belvedere': '🔭', 'parc': '🌳', 'saut': '🏞️',
         'cimetiere': '🪦', 'barrage': '🧱', 'labyrinthe': '🌽', 'etang': '🏞️',
@@ -28,7 +28,7 @@ function getEmojiForType(type) {
         'action': '🎯', 'piscine': '🏊', 'ski': '🎿', 'reserve': '🌿',
         'moulin': '🏚️', 'dolmen': '🗿', 'autre': '📍'
     };
-    return map[type] || '📍';
+    return typeMap[type] || '📍';
 }
 
 function createCustomIcon(emoji, isDone) {
@@ -63,7 +63,7 @@ async function initPlaces() {
         backBtn.addEventListener('click', () => {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.getElementById('tab-home').classList.add('active');
-            document.querySelector('[data-tab="tab-home"]').classList.add('active');
+            document.querySelector('[data-tab="tab-home"]')?.classList.add('active');
         });
     }
 
@@ -108,6 +108,7 @@ async function loadPlaces() {
 // 5. RENDU
 // ==========================================
 function renderMap() {
+    if (!map) return;
     Object.values(markers).forEach(m => map.removeLayer(m));
     markers = {};
 
@@ -137,6 +138,7 @@ function renderMap() {
 
 function renderChecklist() {
     const container = document.getElementById('places-checklist');
+    if (!container) return;
     container.innerHTML = '';
 
     const sorted = [...placesData].sort((a, b) => {
@@ -176,10 +178,28 @@ window.focusPlaceOnMap = (id) => {
 
 window.togglePlaceDone = async (id) => {
     try {
-        await fetch(`/api/places/${id}/toggle`, { method: 'PATCH' });
-        loadPlaces();
+        console.log(`📍 Tentative de cocher le lieu ID: ${id}`);
+        const res = await fetch(`/api/places/${id}/toggle`, { method: 'PATCH' });
+
+        if (res.ok) {
+            console.log('✅ Lieu coché avec succès par le serveur !');
+
+            if (typeof window.plantTamagotchi !== 'undefined' && window.plantTamagotchi) {
+                console.log('🌱 Système plante détecté. Ajout de +3 points de connexion...');
+                await window.plantTamagotchi.addConnection(3);
+                console.log('✅ Points de connexion ajoutés et UI mise à jour !');
+            } else {
+                console.warn('⚠️ ERREUR : window.plantTamagotchi est introuvable !');
+                console.warn('Vérifie que <script type="module" src="/js/plant-tamagotchi.js"></script> est bien présent dans index.html AVANT la fermeture de </body>');
+            }
+
+            loadPlaces();
+        } else {
+            console.error('❌ Erreur API toggle place:', await res.text());
+        }
     } catch (err) {
-        console.error('Erreur toggle:', err);
+        console.error('❌ Erreur critique lors du toggle:', err);
+        alert("Une erreur est survenue lors de la mise à jour du lieu.");
     }
 };
 
@@ -234,11 +254,20 @@ async function handlePlaceSubmit(e) {
             body: JSON.stringify(payload)
         });
 
-        // ✅ SUPPRIMÉ : La notification est maintenant gérée par le serveur (routes/places.js)
-        // pour assurer la synchronisation entre Marc et Blandine.
+        if (res.ok) {
+            // 🌱 MISE À JOUR DE LA PLANTE TAMAGOTCHI OPTIMISÉE (Connexion +5)
+            // On vérifie `!id` pour s'assurer que c'est un NOUVEAU lieu, pas une modification
+            if (!id) {
+                if (typeof window.plantTamagotchi !== 'undefined' && window.plantTamagotchi) {
+                    await window.plantTamagotchi.addConnection(5);
+                }
+            }
 
-        closePlaceModal();
-        loadPlaces();
+            closePlaceModal();
+            loadPlaces();
+        } else {
+            alert('Erreur lors de la sauvegarde');
+        }
     } catch (err) {
         console.error('Erreur sauvegarde:', err);
         alert('Erreur lors de la sauvegarde');
@@ -288,9 +317,7 @@ function setupBottomSheet() {
 // ==========================================
 // INITIALISATION GLOBALE
 // ==========================================
-initPlaces();
-setupBottomSheet();
-
 document.addEventListener('DOMContentLoaded', () => {
     initPlaces();
+    setupBottomSheet();
 });

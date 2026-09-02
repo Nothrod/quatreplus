@@ -76,10 +76,10 @@ router.post('/send', checkAuth, (req, res) => {
 
         currentUserData.thinkOfYou.lastSent = Date.now();
 
-        // ➕ NOUVEAU : Notification pour l'autre personne (Format compatible avec notif-bell.js)
+        // ➕ Notification pour l'autre personne
         otherUserData.pendingNotifications.push({
             id: Date.now().toString(),
-                                                type: 'info', // Utilise l'icône 🔔 par défaut. Mets 'badge' si tu préfères 🏆
+                                                type: 'info',
                                                 text: `${displayName} t'a envoyé un "Je pense à toi" ! (Série : ${currentUserData.thinkOfYou.streak} jours) 🤍`,
                                                 link: '/',
                                                 createdAt: Date.now()
@@ -92,28 +92,14 @@ router.post('/send', checkAuth, (req, res) => {
             console.error('❌ Échec de la sauvegarde (send):', saveErr);
         }
 
+        // ✅ AJOUT : On renvoie le username pour que le frontend puisse mettre à jour la plante
         res.json({
             success: true,
+            username: req.currentUser, // <-- CETTE LIGNE EST CRUCIALE
             stats: { total: currentUserData.thinkOfYou.total, streak: currentUserData.thinkOfYou.streak }
         });
     } catch (err) {
         console.error('❌ Erreur critique dans /send:', err);
-        res.status(500).json({ error: 'Erreur serveur interne' });
-    }
-});
-
-router.post('/reset', checkAuth, (req, res) => {
-    try {
-        const currentUserData = users[req.currentUser];
-        if (currentUserData && currentUserData.thinkOfYou) {
-            currentUserData.thinkOfYou = { total: 0, streak: 0, lastSent: null, history: [] };
-            currentUserData.pendingNotifications = [];
-
-            try { saveStore(users); } catch (e) { console.error('❌ Échec sauvegarde (reset):', e); }
-        }
-        res.json({ success: true });
-    } catch (err) {
-        console.error('❌ Erreur critique dans /reset:', err);
         res.status(500).json({ error: 'Erreur serveur interne' });
     }
 });

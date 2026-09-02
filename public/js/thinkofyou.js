@@ -82,15 +82,32 @@ export function initThinkOfYou() {
                     updateBadges(data.stats.streak);
                     thinkBtn.classList.add('sent');
 
-                    // ➕ 2. DÉTECTION LOCALE DU DÉBLOCAGE DE BADGE (Instantané et parfait)
+                    // ➕ DÉTECTION LOCALE DU DÉBLOCAGE DE BADGE
                     const newStreak = data.stats.streak;
                     const unlockedThreshold = badgeThresholds.find(t => previousStreak < t && newStreak >= t);
-
                     if (unlockedThreshold) {
                         notifSystem.badgeDebloque(`Je pense à toi (${unlockedThreshold} jours)`);
                     }
-
                     previousStreak = newStreak;
+
+                    // 🌱 MISE À JOUR DE LA PLANTE TAMAGOTCHI (Logique "Je pense à toi")
+                    try {
+                        // On utilise le username renvoyé par le backend pour être 100% sûr
+                        await fetch('/api/plant/action/think-of-you', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ user: data.username })
+                        });
+
+                        // Rafraîchir l'affichage de la plante instantanément
+                        if (typeof window.plantTamagotchi !== 'undefined' && window.plantTamagotchi) {
+                            await window.plantTamagotchi.loadState();
+                            window.plantTamagotchi.render();
+                        }
+                    } catch (plantErr) {
+                        console.error('Erreur mise à jour plante (think of you):', plantErr);
+                        // On ne bloque pas l'expérience utilisateur si la plante échoue
+                    }
 
                     setTimeout(() => {
                         if (thinkSubtitle) thinkSubtitle.textContent = 'Déjà envoyé aujourd\'hui ✓';

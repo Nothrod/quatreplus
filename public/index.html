@@ -168,6 +168,78 @@
     </div>
 </div>
 
+<!-- WIDGET 9 : Plante Tamagotchi -->
+<div class="widget-card widget-plant" id="plant-widget">
+    <div class="plant-header">
+        <h3>Jardin secret</h3></br>
+        <h4 class="plant-stage-label" id="plant-stage-label">Graine</h4>
+    </div>
+
+    <div class="plant-container">
+        <div class="plant-image-container" id="plant-image-container">
+            <img id="plant-image" src="" alt="Notre plante" style="display: none;">
+            <div class="plant-placeholder" id="plant-placeholder">
+                <span class="plant-emoji">🌱</span>
+            </div>
+        </div>
+
+        <div class="plant-gauges">
+            <div class="gauge-item">
+                <div class="gauge-label">
+                    <span>💧 Boire</span>
+                    <span id="water-value">50%</span>
+                </div>
+                <div class="gauge-progress">
+                    <div class="gauge-bar" id="water-bar" style="width: 50%;"></div>
+                </div>
+            </div>
+
+            <div class="gauge-item">
+                <div class="gauge-label">
+                    <span>💖 S'occuper</span>
+                    <span id="care-value">50%</span>
+                </div>
+                <div class="gauge-progress">
+                    <div class="gauge-bar" id="care-bar" style="width: 50%;"></div>
+                </div>
+            </div>
+
+            <div class="gauge-item">
+                <div class="gauge-label">
+                    <span>🔗 Connexion</span>
+                    <span id="connection-value">50%</span>
+                </div>
+                <div class="gauge-progress">
+                    <div class="gauge-bar" id="connection-bar" style="width: 50%;"></div>
+                </div>
+            </div>
+
+            <div class="gauge-item gauge-epanouissement">
+                <div class="gauge-label">
+                    <span>🌸 Épanouissement</span>
+                    <span id="epanouissement-value">50%</span>
+                </div>
+                <div class="gauge-progress">
+                    <div class="gauge-bar epanouissement-bar" id="epanouissement-bar" style="width: 50%;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="plant-actions">
+            <button id="plant-water-btn" class="plant-action-btn" disabled>
+                <span class="action-icon">💧</span>
+                <span class="action-text">Donner à boire</span>
+                <span class="action-timer" id="water-timer"></span>
+            </button>
+            <button id="plant-care-btn" class="plant-action-btn" disabled>
+                <span class="action-icon">💖</span>
+                <span class="action-text">S'en occuper</span>
+                <span class="action-timer" id="care-timer"></span>
+            </button>
+        </div>
+    </div>
+</div>
+
                     </div>
                 </div>
 
@@ -714,6 +786,7 @@
         </div>
 
     </div> <!-- Fin de #app -->
+    <script type="module" src="/js/plant-tamagotchi.js"></script>
     <script type="module" src="/js/places.js"></script>
     <script type="module" src="/js/app.js"></script>
 </body>

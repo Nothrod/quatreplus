@@ -53,6 +53,7 @@ app.use('/api/places', placesRoutes);
 app.use('/api/messaging', require('./routes/messaging'));
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
+app.use('/api/plant', require('./routes/plant'));
 
 // Page d'accueil
 app.get('/', (req, res) => {

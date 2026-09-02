@@ -31,11 +31,6 @@ import { initQuestion } from './question.js';
 import { initOnAFait } from './onafait.js';
 import { initMessaging } from './messaging.js';
 
-
-
-
-
-
 console.log('🌸 Quatre+ initialisé (Mode Modulaire)');
 
 // 1. Initialiser la navigation immédiatement (elle n'a pas besoin d'être connecté)
@@ -45,6 +40,13 @@ initNavigation();
 // Quand la connexion réussit, on lance le chargement des widgets.
 initAuth((userData) => {
     console.log('Utilisateur connecté:', userData.user);
+
+    // 🌱 AJOUT POUR LA PLANTE TAMAGOTCHI :
+    // On sauvegarde l'utilisateur actuel ('marc' ou 'blandine') en minuscules
+    // Cela permet au système de plante de savoir quel timer individuel vérifier
+    localStorage.setItem('currentUser', userData.user.toLowerCase());
+
+    // Initialisation des modules
     initDashboard(userData);
     initMood();
     initThinkOfYou();

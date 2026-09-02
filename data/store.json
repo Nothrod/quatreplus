@@ -572,7 +572,7 @@
         "type": "grotte",
         "description": "",
         "photoUrl": "",
-        "done": false,
+        "done": true,
         "addedBy": {
           "username": "marc"
         }
@@ -1131,7 +1131,7 @@
         "type": "dolmen",
         "description": "",
         "photoUrl": "",
-        "done": false,
+        "done": true,
         "addedBy": {
           "username": "marc"
         }
@@ -2170,7 +2170,7 @@
         "type": "grotte",
         "description": "",
         "photoUrl": "",
-        "done": false,
+        "done": true,
         "addedBy": {
           "username": "marc"
         }
@@ -2729,7 +2729,7 @@
         "type": "dolmen",
         "description": "",
         "photoUrl": "",
-        "done": false,
+        "done": true,
         "addedBy": {
           "username": "marc"
         }
