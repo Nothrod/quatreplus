@@ -1,154 +1,116 @@
-// ➕ 1. IMPORT DU SYSTÈME DE NOTIFICATION (Active le polling en arrière-plan)
-import { notifSystem } from './notif-bell.js';
+// public/js/onafait.js
 
 export function initOnAFait() {
-    const listContainer = document.getElementById('onafait-list');
     const entryWidget = document.getElementById('widget-onafait-entry');
-    const summaryEl = document.getElementById('onafait-dashboard-summary');
     const backBtn = document.getElementById('onafait-back-btn');
+    const onafaitList = document.getElementById('onafait-list');
 
-    function showConstructionPopup() {
-        let popup = document.getElementById('construction-popup');
+    // 1. Gérer le clic sur le widget du dashboard pour ouvrir l'onglet
+    if (entryWidget) {
+        entryWidget.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
 
-        if (!popup) {
-            popup = document.createElement('div');
-            popup.id = 'construction-popup';
-            popup.innerHTML = `
-            <div class="popup-content">
-            <div class="construction-icon">🚧</div>
-            <h3>En construction</h3>
-            <p>Cette fonctionnalité est en cours de développement et sera bientôt disponible !</p>
-            <button class="btn-close" id="close-construction-popup">Fermer</button>
-            </div>
-            `;
-            document.body.appendChild(popup);
+            // Masquer tous les onglets et désactiver les boutons de nav
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
 
-            document.getElementById('close-construction-popup').addEventListener('click', () => {
-                popup.classList.remove('active');
-            });
+            // Afficher l'onglet "On a fait"
+            document.getElementById('tab-onafait').classList.add('active');
 
-            popup.addEventListener('click', (e) => {
-                if (e.target === popup) {
-                    popup.classList.remove('active');
-                }
-            });
-        }
-
-        setTimeout(() => popup.classList.add('active'), 10);
+            // Charger les données
+            loadOnAFaitList();
+        });
     }
 
-    async function loadOnAFait() {
+    // 2. Gérer le bouton retour vers l'accueil
+    if (backBtn) {
+        backBtn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById('tab-home').classList.add('active');
+            document.querySelector('.nav-btn[data-tab="tab-home"]')?.classList.add('active');
+        });
+    }
+
+    // 3. Fonction pour charger et afficher la liste depuis l'API
+    async function loadOnAFaitList() {
+        onafaitList.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 20px;">Chargement...</p>';
+
         try {
-            const res = await fetch('/api/onafait/list');
-            const items = await res.json();
+            const response = await fetch('/api/onafait/list');
+            if (!response.ok) throw new Error('Erreur de chargement');
+            const items = await response.json();
 
-            if (summaryEl) {
-                const completedCount = items.filter(i => i.completed).length;
-                summaryEl.textContent = `${completedCount} / ${items.length} moments validés`;
-            }
-
-            if (!listContainer) return;
-            listContainer.innerHTML = '';
+            onafaitList.innerHTML = ''; // Vider le message de chargement
 
             if (items.length === 0) {
-                listContainer.innerHTML = '<p>Aucun élément pour le moment.</p>';
+                onafaitList.innerHTML = '<p style="text-align: center; color: #a0aec0; padding: 20px;">Aucun élément pour le moment.</p>';
                 return;
             }
 
             items.forEach(item => {
                 const div = document.createElement('div');
-                div.className = `onafait-item ${item.completed ? 'completed' : ''}`;
+                div.className = 'onafait-item';
+                div.style.cssText = 'display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #e2e8f0; transition: background 0.2s;';
+                div.style.cursor = 'pointer';
+
                 div.innerHTML = `
-                <label class="onafait-checkbox-wrapper">
-                <input type="checkbox" class="onafait-checkbox" data-id="${item.id}" ${item.completed ? 'checked' : ''}>
-                <span>${item.title}</span>
-                ${item.description ? `<small>${item.description}</small>` : ''}
-                <span class="onafait-points">+${item.points}</span>
+                <input type="checkbox" id="onafait-${item.id}" ${item.completed ? 'checked' : ''}
+                style="margin-right: 12px; transform: scale(1.2); cursor: pointer;">
+                <label for="onafait-${item.id}" style="flex: 1; cursor: pointer; display: flex; flex-direction: column;">
+                <span style="${item.completed ? 'text-decoration: line-through; color: #a0aec0;' : 'color: #2d3748; font-weight: 600;'}">
+                ${item.title} <span style="font-size: 0.85em; color: #718096; font-weight: normal;">(+${item.points} pts)</span>
+                </span>
+                ${item.description ? `<span style="font-size: 0.8em; color: #718096; margin-top: 2px;">${item.description}</span>` : ''}
                 </label>
                 `;
-                listContainer.appendChild(div);
-            });
 
-            document.querySelectorAll('.onafait-checkbox').forEach(checkbox => {
+                // Gérer le changement d'état (cocher/décocher)
+                const checkbox = div.querySelector('input[type="checkbox"]');
                 checkbox.addEventListener('change', async (e) => {
-                    const id = e.target.dataset.id;
                     const completed = e.target.checked;
-                    const itemDiv = e.target.closest('.onafait-item');
-
-                    e.target.disabled = true;
-
                     try {
                         const res = await fetch('/api/onafait/toggle', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ id, completed })
+                            body: JSON.stringify({ id: item.id, completed })
                         });
                         const data = await res.json();
 
                         if (data.success) {
-                            if (completed) itemDiv.classList.add('completed');
-                            else itemDiv.classList.remove('completed');
+                            // Recharger la liste pour refléter les changements et les nouveaux points
+                            loadOnAFaitList();
 
-                            loadOnAFait();
-                            window.dispatchEvent(new CustomEvent('friendship-level-updated'));
+                            // Optionnel : Mettre à jour le widget du niveau d'amitié sur le dashboard s'il est visible
+                            const levelDisplay = document.getElementById('friendship-level');
+                            if (levelDisplay && data.displayLevel) {
+                                levelDisplay.textContent = data.displayLevel;
+                            }
                         } else {
                             alert(data.error || 'Erreur lors de la mise à jour');
-                            e.target.checked = !completed;
+                            e.target.checked = !completed; // Revenir à l'état précédent en cas d'erreur
                         }
                     } catch (err) {
-                        console.error(err);
-                        alert('Erreur de connexion');
+                        console.error('Erreur toggle:', err);
+                        alert('Erreur de connexion au serveur');
                         e.target.checked = !completed;
-                    } finally {
-                        e.target.disabled = false;
                     }
                 });
+
+                // Permettre de cliquer sur toute la ligne pour cocher
+                div.addEventListener('click', (e) => {
+                    if (e.target !== checkbox) {
+                        checkbox.checked = !checkbox.checked;
+                        checkbox.dispatchEvent(new Event('change'));
+                    }
+                });
+
+                onafaitList.appendChild(div);
             });
 
         } catch (err) {
-            console.error('Erreur chargement On a fait:', err);
-            if (listContainer) listContainer.innerHTML = '<p>Erreur de chargement.</p>';
-            if (summaryEl) summaryEl.textContent = 'Erreur';
+            console.error(err);
+            onafaitList.innerHTML = '<p style="text-align: center; color: #e53e3e; padding: 20px;">Erreur lors du chargement des données.</p>';
         }
     }
-
-    if (entryWidget) {
-        entryWidget.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            showConstructionPopup();
-        });
-    }
-
-    const navBtn = document.querySelector('.nav-btn[data-tab="tab-onafait"]');
-    if (navBtn) {
-        navBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            showConstructionPopup();
-        });
-    }
-
-    if (backBtn) {
-        backBtn.addEventListener('click', () => {
-            const dashboardNavBtn = document.querySelector('.nav-btn[data-tab="tab-dashboard"]');
-            if (dashboardNavBtn) {
-                dashboardNavBtn.click();
-            } else {
-                document.querySelectorAll('.tab-content').forEach(tab => {
-                    tab.classList.remove('active');
-                    tab.style.display = 'none';
-                });
-                const targetTab = document.getElementById('tab-dashboard');
-                if (targetTab) {
-                    targetTab.classList.add('active');
-                    targetTab.style.display = 'block';
-                }
-            }
-        });
-    }
-
-    window.addEventListener('friendship-level-updated', loadOnAFait);
-
-    loadOnAFait();
 }

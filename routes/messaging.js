@@ -136,26 +136,53 @@ router.post('/read', (req, res) => {
     res.json({ success: true });
 });
 
+// 🆕 ROUTE POST MODIFIÉE POUR ACCEPTER LES PHOTOS
 router.post('/', (req, res) => {
     if (!req.session.user) return res.status(401).json({ error: 'Non connecté' });
 
     const userNameRaw = getUserName(req.session.user);
     const userName = userNameRaw.toLowerCase(); // 'marc' ou 'blandine'
-    const { text } = req.body;
+    const { text, photo } = req.body; // 🆕 Récupération de la photo
 
-    if (!text || !text.trim()) return res.status(400).json({ error: 'Message vide' });
-    if (text.length > 1000) return res.status(400).json({ error: 'Message trop long (max 1000 caractères)' });
+    // 🆕 Validation : il faut au moins du texte OU une photo
+    if ((!text || !text.trim()) && !photo) {
+        return res.status(400).json({ error: 'Message vide' });
+    }
 
-    const cleanText = text.replace(/<[^>]*>/g, '').trim();
-    if (!cleanText) return res.status(400).json({ error: 'Message invalide' });
+    let cleanText = '';
+    if (text) {
+        if (text.length > 1000) return res.status(400).json({ error: 'Message trop long (max 1000 caractères)' });
+        cleanText = text.replace(/<[^>]*>/g, '').trim();
+    }
+
+    let photoData = null;
+    if (photo) {
+        // 🆕 Vérification basique du format base64 image
+        if (!photo.startsWith('data:image/')) {
+            return res.status(400).json({ error: 'Format de photo invalide' });
+        }
+        // 🆕 Limite de taille approx 5MB en base64 (7MB pour être large)
+        if (photo.length > 7 * 1024 * 1024) {
+            return res.status(400).json({ error: 'Photo trop lourde (max 5MB)' });
+        }
+        photoData = photo;
+    }
 
     const messages = getMessages();
-    messages.push({
+    const messageObj = {
         id: Date.now().toString(),
-                  author: userNameRaw,
-                  text: cleanText,
-                  timestamp: new Date().toISOString()
-    });
+            author: userNameRaw,
+            timestamp: new Date().toISOString()
+    };
+
+    if (cleanText) {
+        messageObj.text = cleanText;
+    }
+    if (photoData) {
+        messageObj.photo = photoData; // 🆕 Ajout de la photo au message
+    }
+
+    messages.push(messageObj);
 
     if (messages.length > 500) messages.splice(0, messages.length - 500);
     saveMessages(messages);
@@ -169,10 +196,20 @@ router.post('/', (req, res) => {
         users[otherUser].pendingNotifications = [];
     }
 
+    // 🆕 Texte de notification adapté selon le contenu
+    let notificationText = '';
+    if (cleanText && photoData) {
+        notificationText = `${displayName} t'a envoyé un message avec une photo 📷`;
+    } else if (photoData) {
+        notificationText = `${displayName} t'a envoyé une photo 📷`;
+    } else {
+        notificationText = `${displayName} t'a envoyé : "${cleanText.substring(0, 30)}${cleanText.length > 30 ? '...' : ''}"`;
+    }
+
     users[otherUser].pendingNotifications.push({
         id: Date.now().toString(),
                                                type: 'chat',
-                                               text: `${displayName} t'a envoyé un message : "${cleanText.substring(0, 30)}${cleanText.length > 30 ? '...' : ''}"`,
+                                               text: notificationText,
                                                link: '/',
                                                createdAt: Date.now()
     });

@@ -1,11 +1,5 @@
 [
   {
-    "id": "dormir_ensemble",
-    "title": "Dormir ensemble",
-    "description": "Dormir ensemble habillé",
-    "points": 0.02
-  },
-  {
     "id": "dormir_ensemble2",
     "title": "Dormir ensemble ",
     "description": "Dormir ensemble en sous vétement",
@@ -16,30 +10,6 @@
     "title": "Dormir ensemble 3",
     "description": "Dormir ensemble nue",
     "points": 0.06
-  },
-   {
-    "id": "smack",
-    "title": "Smack",
-    "description": "Echanger un smack",
-    "points": 0.01
-  },
-  {
-    "id": "baiser_cou",
-    "title": "Baiser dans le cou",
-    "description": "Embrasser ou mordiller doucement le cou de l'autre",
-    "points": 0.01
-  },
-  {
-    "id": "sembrasser",
-    "title": "S'embrasser",
-    "description": "Echanger un baiser",
-    "points": 0.02
-  },
-   {
-    "id": "baiser_passionne",
-    "title": "Baiser passionné",
-    "description": "S'embrasse de manière passionné",
-    "points": 0.04
   },
   {
     "id": "calin_sousvetement",
@@ -72,13 +42,7 @@
     "points": 0.04
   },
   {
-    "id": "caresse_peau",
-    "title": "Caresses sur la peau",
-    "description": "Se caresser la peau sous les vêtements",
-    "points": 0.04
-  },
-  {
-    "id": "reve_calin",
+    "id": "reveil_calin",
     "title": "Réveil câlin",
     "description": "Se réveiller à coté et commencer la journée par des calins",
     "points": 0.02

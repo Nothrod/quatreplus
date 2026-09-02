@@ -12,10 +12,18 @@ export function initMessaging() {
     const unreadBadge = document.getElementById('messaging-unread-badge');
     const unreadText = document.getElementById('messaging-unread-text');
 
+    // 🆕 Éléments photo
+    const photoInput = document.getElementById('photo-input');
+    const photoToggleBtn = document.getElementById('photo-toggle-btn');
+    const photoPreview = document.getElementById('photo-preview');
+    const photoPreviewImg = document.getElementById('photo-preview-img');
+    const removePhotoBtn = document.getElementById('remove-photo-btn');
+
     if (!entryBtn) return;
 
     let modalOpen = false;
     let lastMessageId = null;
+    let selectedPhoto = null; // 🆕 Photo sélectionnée en attente d'envoi
 
     // ============ OUVERTURE / FERMETURE ============
     entryBtn.addEventListener('click', async () => {
@@ -30,19 +38,119 @@ export function initMessaging() {
         modalOpen = false;
     });
 
+    // ============ 🆕 GESTION ET COMPRESSION DES PHOTOS ============
+
+    // Fonction utilitaire pour compresser l'image côté client
+    async function compressImage(file, maxWidth = 800, quality = 0.7) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    let width = img.width;
+                    let height = img.height;
+
+                    // Redimensionner si l'image est plus large que maxWidth
+                    if (width > maxWidth) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    }
+
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+
+                    // Fond blanc au cas où c'est un PNG transparent
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, width, height);
+                    ctx.drawImage(img, 0, 0, width, height);
+
+                    // Compression en JPEG avec le facteur de qualité
+                    const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+                    resolve(compressedDataUrl);
+                };
+                img.onerror = reject;
+            };
+            reader.onerror = reject;
+        });
+    }
+
+    if (photoToggleBtn && photoInput) {
+        photoToggleBtn.addEventListener('click', () => photoInput.click());
+
+        photoInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            // Vérification de base avant compression
+            if (!file.type.startsWith('image/')) {
+                alert('Veuillez sélectionner une image valide');
+                photoInput.value = '';
+                return;
+            }
+
+            // Afficher un petit indicateur de chargement (optionnel mais sympa)
+            photoPreviewImg.src = '';
+            photoPreview.style.display = 'block';
+            photoPreview.innerHTML = '<p style="padding:10px; text-align:center; font-size:0.8rem;">Compression en cours...</p>';
+
+            try {
+                // 🚀 Compression de l'image
+                const compressedBase64 = await compressImage(file, 800, 0.75);
+
+                selectedPhoto = compressedBase64;
+
+                // Restaurer l'affichage de l'aperçu avec l'image compressée
+                photoPreview.innerHTML = `
+                <img id="photo-preview-img" src="${compressedBase64}" alt="Aperçu">
+                <button id="remove-photo-btn" class="remove-photo-btn" type="button">×</button>
+                `;
+
+                // Réattacher l'événement au nouveau bouton de suppression
+                document.getElementById('remove-photo-btn').addEventListener('click', () => {
+                    selectedPhoto = null;
+                    photoInput.value = '';
+                    photoPreview.style.display = 'none';
+                    photoPreview.innerHTML = '';
+                });
+
+            } catch (err) {
+                console.error("Erreur de compression :", err);
+                alert("Impossible de traiter l'image.");
+                photoPreview.style.display = 'none';
+                photoInput.value = '';
+            }
+        });
+    }
+
     // ============ ENVOI ============
     sendBtn.addEventListener('click', async () => {
         const text = inputField.value.trim();
-        if (!text) return;
+        if (!text && !selectedPhoto) return; // 🆕 Permet d'envoyer une photo sans texte
+
         sendBtn.disabled = true;
         try {
+            const payload = { text: text || '' };
+            if (selectedPhoto) {
+                payload.photo = selectedPhoto; // 🆕 Ajout de la photo
+            }
+
             const res = await fetch('/api/messaging', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text })
+                body: JSON.stringify(payload)
             });
             if (res.ok) {
                 inputField.value = '';
+                // 🆕 Réinitialiser la photo après envoi
+                selectedPhoto = null;
+                photoInput.value = '';
+                photoPreview.style.display = 'none';
+                photoPreviewImg.src = '';
+
                 await loadMessages('force');
                 markAsRead();
             }
@@ -76,9 +184,6 @@ export function initMessaging() {
             if (mode === 'force' || latestId !== lastMessageId) {
                 const nearBottom = historyContainer.scrollHeight - historyContainer.scrollTop - historyContainer.clientHeight < 120;
 
-                // ✅ SUPPRIMÉ : La notification est maintenant gérée par le serveur (routes/messaging.js)
-                // pour assurer la synchronisation entre Marc et Blandine.
-
                 lastMessageId = latestId;
                 renderMessages(messages);
 
@@ -100,7 +205,7 @@ export function initMessaging() {
             if (count > 0) {
                 unreadBadge.textContent = count;
                 unreadBadge.style.display = 'inline-flex';
-                unreadText.textContent = count === 1 ? 'message non lu 💬' : 'messages non lus 💬';
+                unreadText.textContent = count === 1 ? 'message non lu ' : 'messages non lus 💬';
             } else {
                 unreadBadge.style.display = 'none';
                 unreadText.textContent = 'Aucun message non lu';
@@ -136,38 +241,74 @@ export function initMessaging() {
                 const d = new Date(msg.timestamp);
                 const time = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
                 const date = d.toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' });
-                msgEl.innerHTML = `
-                <div class="msg-author">${escapeHTML(msg.author)}</div>
-                <div class="msg-text">${escapeHTML(msg.text)}</div>
-                <div class="msg-time">📅 ${date} à ${time}</div>
-                `;
+
+                let html = `<div class="msg-author">${escapeHTML(msg.author)}</div>`;
+
+                //  Affichage du texte (optionnel maintenant)
+                if (msg.text) {
+                    html += `<div class="msg-text">${escapeHTML(msg.text)}</div>`;
+                }
+
+                //  Affichage de la photo si présente
+                if (msg.photo) {
+                    html += `<img src="${msg.photo}" class="msg-photo" alt="Photo" onclick="openPhotoLightbox(this.src)" loading="lazy">`;
+                }
+
+                html += `<div class="msg-time"> ${date} à ${time}</div>`;
+                msgEl.innerHTML = html;
                 historyContainer.appendChild(msgEl);
             });
         }
 
         function escapeHTML(str) {
+            if (!str) return '';
             const p = document.createElement('p');
             p.textContent = str;
             return p.innerHTML;
         }
+
+        // ============ 🆕 LIGHTBOX POUR PHOTOS ============
+        window.openPhotoLightbox = function(photoSrc) {
+            const lightbox = document.getElementById('photo-lightbox');
+            const img = document.getElementById('photo-lightbox-img');
+            if (lightbox && img) {
+                img.src = photoSrc;
+                lightbox.classList.add('active');
+            }
+        };
+
+        window.closePhotoLightbox = function() {
+            const lightbox = document.getElementById('photo-lightbox');
+            if (lightbox) {
+                lightbox.classList.remove('active');
+            }
+        };
+
+        // Fermer la lightbox en cliquant dessus
+        document.addEventListener('click', (e) => {
+            const lightbox = document.getElementById('photo-lightbox');
+            if (lightbox && e.target === lightbox) {
+                closePhotoLightbox();
+            }
+        });
 
         // ============ SÉLECTEUR D'EMOJIS ============
         const emojiToggleBtn = document.getElementById('emoji-toggle-btn');
         const emojiPicker = document.getElementById('emoji-picker');
         if (emojiToggleBtn && emojiPicker) {
             const emojiGrid = emojiPicker.querySelector('.emoji-grid');
-            const faceEmojis = ['😀','😃','😄','😁','😆','😅','🤣','😂','🙂','🙃',
-            '😉','😊','😇','🥰','😍','🤩','😘','😗','😚','😙',
-            '😋','😛','😜','🤪','😝','🤑','🤗','🤭','🤫',
-            '🤔','🤐','🤨','😐','😑','😶','😏','😒',
-            '🙄','😬','🤥','😌','😔','😪','🤤','😴','😷','🤒',
-            '🤕','🤢','🤮','🥵','🥶','🥴','😵','🤯','🤠','🥳',
-            '😎','🤓','🧐','😕','😟','🙁','😮','😯',
+            const faceEmojis = ['😀','😃','','😁','😆','😅','','😂','🙂','🙃',
+            '😉','😊','😇','🥰','😍','🤩','','😗','😚','😙',
+            '😋','😛','😜','🤪','😝','🤑','','🤭','🤫',
+            '🤔','🤐','','😐','😑','😶','😏','😒',
+            '🙄','😬','🤥','😌','','😪','🤤','😴','😷','🤒',
+            '','🤢','🤮','','🥶','🥴','','🤯','🤠','',
+            '😎','🤓','🧐','😕','😟','','😮','😯',
             '😲','😳','🥺','😦','😧','😨','😰','😥','😢',
-            '😭','😱','😖','😣','😞','😓','😩','😫','🥱','😤',
-            '😡','😠','🤬','😈','👿','💀','☠️','💩','🤡','👹',
-            '👺','👻','👽','👾','🤖','😺','😸','😹','😻','😼',
-            '😽','🙀','😿','😾','🙈'];
+            '😭','😱','😖','😣','😞','😓','😩','😫','🥱','',
+            '😡','😠','','😈','👿','💀','☠️','💩','🤡','👹',
+            '👺','','👽','👾','','😺','😸','😹','😻','😼',
+            '😽','🙀','😿','😾',''];
 
             faceEmojis.forEach(emoji => {
                 const btn = document.createElement('button');

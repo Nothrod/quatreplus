@@ -671,7 +671,7 @@
             </div>
         </div>
 
-        <!-- 🆕 MODAL MESSAGERIE : LA CABANE -->
+                <!-- 🆕 MODAL MESSAGERIE : LA CABANE -->
         <div id="messaging-modal" class="modal-overlay">
             <div class="modal-content messaging-content">
                 <button class="modal-close" id="messaging-close">✕</button>
@@ -679,22 +679,38 @@
                 <div id="messaging-history" class="messaging-history">
                     <p class="empty-msg">Chargement des messages...</p>
                 </div>
+
                 <div class="messaging-input-area">
-    <div class="message-input-wrapper">
-        <textarea id="message-input" placeholder="Écris un petit mot..." rows="2"></textarea>
-        <button id="emoji-toggle-btn" class="emoji-toggle-btn" type="button" title="Ajouter un emoji">😊</button>
-        <div id="emoji-picker" class="emoji-picker">
-            <div class="emoji-grid">
-                <!-- Les emojis seront injectés ici par JS -->
-            </div>
-        </div>
-    </div>
-    <button id="send-message-btn" class="btn-primary">Envoyer 💌</button>
-</div>
+                    <div class="message-input-wrapper">
+                        <textarea id="message-input" placeholder="Écris un petit mot..." rows="2"></textarea>
+                        <button id="photo-toggle-btn" class="photo-toggle-btn" type="button" title="Ajouter une photo">📷</button>
+                        <button id="emoji-toggle-btn" class="emoji-toggle-btn" type="button" title="Ajouter un emoji">😊</button>
+
+                        <input type="file" id="photo-input" accept="image/*" hidden>
+
+                        <div id="emoji-picker" class="emoji-picker">
+                            <div class="emoji-grid"></div>
+                        </div>
+
+                        <!-- Preview de la photo sélectionnée -->
+                        <div id="photo-preview" class="photo-preview" style="display: none;">
+                            <img id="photo-preview-img" src="" alt="Aperçu">
+                            <button id="remove-photo-btn" class="remove-photo-btn" type="button">×</button>
+                        </div>
+                    </div>
+                    <button id="send-message-btn" class="btn-primary">Envoyer 💌</button>
+                </div>
+
                 <button id="clear-messages-btn" class="btn-danger" style="margin-top: 15px; width: 100%; opacity: 0.8; font-size: 0.8rem;">
                     🗑️ Vider la messagerie (pour nous deux)
                 </button>
             </div>
+        </div>
+
+        <!-- Lightbox pour voir les photos en grand -->
+        <div id="photo-lightbox" class="photo-lightbox">
+            <span class="photo-lightbox-close" onclick="closePhotoLightbox()">×</span>
+            <img id="photo-lightbox-img" src="" alt="Photo en grand">
         </div>
 
     </div> <!-- Fin de #app -->
